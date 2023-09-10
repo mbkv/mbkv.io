@@ -78,9 +78,11 @@ class CustomCanvasElement extends HTMLCanvasElement {
   }
 
   rafLoop() {
-    this.time = performance.now() / 1000;
-    this.draw();
-    this.rafLoopId = requestAnimationFrame(this.rafLoop);
+    this.rafLoopId = this.requestAnimationFrame(() => {
+      this.time = performance.now() / 1000;
+      this.draw();
+      this.rafLoop();
+    })
   }
 
   draw() {
