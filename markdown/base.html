@@ -1,33 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <meta name="description" content="{{description}}" />
+    <style>
+      {{{styles}}}
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}</title>
-  <meta name="description" content="{{description}}">
-  <style>{{{styles}}}</style>
-</head>
-
-<body>
-  <nav id="nav">
-    <div class="header">
-      <a href="/" class="brand" rel="home" aria-label="Go back to the homepage"></a>
-      <!-- <button id="nav-burger" class="burger"></button> -->
-    </div>
-    <!-- <div class="content">
+  <body>
+    <nav id="nav">
+      <div class="header">
+        <a
+          href="/"
+          class="brand"
+          rel="home"
+          aria-label="Go back to the homepage"
+        ></a>
+        <!-- <button id="nav-burger" class="burger"></button> -->
+      </div>
+      <!-- <div class="content">
       <a href="/" class="link">Home</a>
       <a href="/a" class="link">test link</a>
       <a href="/b" class="link">test link2</a>
       <a href="/c" class="link">test link3</a>
     </div> -->
-  </nav>
+    </nav>
 
-  <main>
-    <article>
-      {{{content}}}
-    </article>
-  </main>
-</body>
-
+    <main>
+      <article>{{{content}}}</article>
+    </main>
+  </body>
 </html>

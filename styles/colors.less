@@ -4,7 +4,6 @@
 @light-theme-saturation: 1%;
 @light-theme-brightness: 98%;
 
-
 // Monochrome -----------------------------------
 @light-theme-mono-1: hsl(@light-theme-hue, 8%, 24%);
 @light-theme-mono-2: hsl(@light-theme-hue, 6%, 44%);
@@ -22,12 +21,15 @@
 @light-theme-orange: hsl(41, 99%, 30%); // <-orange 1
 @light-theme-orange-2: hsl(41, 99%, 38%); // <-orange 2
 
-
 // Base colors -----------------------------------
 @light-theme-fg: @light-theme-mono-1;
-@light-theme-bg: hsl(@light-theme-hue, @light-theme-saturation, @light-theme-brightness);
-@light-theme-bg-2: darken(@light-theme-bg, 36%);
-@light-theme-gutter: @light-theme-bg-2;
+@light-theme-bg: hsl(
+  @light-theme-hue,
+  @light-theme-saturation,
+  @light-theme-brightness
+);
+@light-theme-bg-2: darken(@light-theme-bg, 10%);
+@light-theme-gutter: darken(@light-theme-bg, 36%);
 @light-theme-guide: fade(@light-theme-fg, 20%);
 @light-theme-accent: hsl(@light-theme-hue, 100%, 66%);
 
@@ -36,7 +38,6 @@
 @dark-theme-hue: 220;
 @dark-theme-saturation: 13%;
 @dark-theme-brightness: 18%;
-
 
 // Monochrome -----------------------------------
 @dark-theme-mono-1: hsl(@dark-theme-hue, 14%, 71%); // default text
@@ -55,10 +56,13 @@
 @dark-theme-orange: hsl(29, 54%, 61%); // <-orange 1
 @dark-theme-orange-2: hsl(39, 67%, 69%); // <-orange 2
 
-
 // Base colors -----------------------------------
 @dark-theme-fg: @dark-theme-mono-1;
-@dark-theme-bg: hsl(@dark-theme-hue, @dark-theme-saturation, @dark-theme-brightness);
+@dark-theme-bg: hsl(
+  @dark-theme-hue,
+  @dark-theme-saturation,
+  @dark-theme-brightness
+);
 @dark-theme-bg-2: darken(@dark-theme-bg, 5%, true);
 @dark-theme-gutter: darken(@dark-theme-fg, 26%);
 @dark-theme-guide: fade(@dark-theme-fg, 15%);
@@ -77,7 +81,6 @@
   --theme-red-2: @light-theme-red-2;
   --theme-orange: @light-theme-orange;
   --theme-orange-2: @light-theme-orange-2;
-
 
   --theme-fg: @light-theme-fg;
   --theme-bg: @light-theme-bg;
