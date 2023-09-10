@@ -73,12 +73,11 @@ class CustomCanvasElement extends HTMLCanvasElement {
       this.width = this.parentElement.clientWidth;
       this.height =
         Number(this.getAttribute("ratio")) * this.parentElement.clientWidth;
-      this.draw();
     }
   }
 
   rafLoop() {
-    this.rafLoopId = this.requestAnimationFrame(() => {
+    this.rafLoopId = window.requestAnimationFrame(() => {
       this.time = performance.now() / 1000;
       this.draw();
       this.rafLoop();
