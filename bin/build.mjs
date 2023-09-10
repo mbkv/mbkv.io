@@ -105,7 +105,10 @@ async function buildSite() {
 }
 
 async function build() {
-  await buildSite().catch((err) => console.error(err));
+  const now = performance.now();
+  await buildSite().then(() => {
+    console.log(`Built in ${(performance.now() - now).toFixed(0)}ms`)
+  }).catch((err) => console.error(err));
 }
 
 const isWatch = process.argv.some((arg) => arg === "--watch");
