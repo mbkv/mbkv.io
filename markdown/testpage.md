@@ -3,6 +3,10 @@ title: "test page"
 description: "this is a test page don't click on it"
 ---
 
+# Test page to show off neat markdown features
+
+how'd you get here?
+
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
 nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -61,9 +65,7 @@ async function buildMarkdown(styles) {
   ]);
 
   for (const filename of markdownFiles) {
-    if (!filename.endsWith(".md")) {
-      continue;
-    }
+    if 
     const markdown = await fs.readFile(path.join(markdownDir, filename), {
       encoding: "utf-8",
     });
@@ -115,3 +117,16 @@ if (isWatch) {
   build();
 }
 ```
+
+here's some random list
+
+1. foo
+2. bar
+3. baz
+
+* foo
+* bar
+* baz
+
+<canvas ratio="1" is="hello-world-canvas"></custom-canvas>
+<script async defer src="testpage.js"></script>

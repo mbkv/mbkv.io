@@ -1,14 +1,15 @@
 import less from "less";
 import chokidar from "chokidar";
 import mustache from "mustache";
-import path from "path";
 import { minify as minifyHtml } from "html-minifier-terser";
-import fsSync from "fs";
-import fs from "fs/promises";
+import { minify as minifyJS } from 'terser';
 import { Marked } from "marked";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
 import frontMatter from "front-matter";
+import path from "path";
+import fsSync from "fs";
+import fs from "fs/promises";
 
 const rootDir = fsSync.realpathSync(
   path.join(path.dirname(process.argv[1]), ".."),
@@ -38,18 +39,15 @@ const marked = new Marked(
   }),
 );
 
-async function buildMarkdown(styles) {
-  // return;
-  const [baseHtml, markdownFiles] = await Promise.all([
+async function buildSite() {
+  const [styles, baseHtml, siteFiles] = await Promise.all([
+    buildLess(),
     fs.readFile(baseHtmlEntrypoint, { encoding: "utf-8" }),
     fs.readdir(markdownDir),
   ]);
 
-  for (const filename of markdownFiles) {
-    if (!filename.endsWith(".md")) {
-      continue;
-    }
-    const markdown = await fs.readFile(path.join(markdownDir, filename), {
+  const buildAsMarkdown = async (filename) => {
+    const markdown = await fs.readFile(filename, {
       encoding: "utf-8",
     });
     const metadata = frontMatter(markdown);
@@ -77,13 +75,29 @@ async function buildMarkdown(styles) {
       minified,
     );
   }
+
+  const buildAsJavascript = async (filename) => {
+    const file = await fs.readFile(filename, { encoding: 'utf-8' })
+    const minified = await minifyJS(file)
+    await fs.writeFile(
+      path.join(publicDir, path.basename(filename)),
+      minified.code,
+    )
+  }
+
+  for (const filename of siteFiles) {
+    const fullpath = path.join(markdownDir, filename)
+    if (filename.endsWith(".md")) {
+      await buildAsMarkdown(fullpath);
+    } else if (filename.endsWith('.js')) {
+      await buildAsJavascript(fullpath);
+    }
+  }
+
 }
 
 async function build() {
-  buildLess().then((styles) => {
-    buildMarkdown(styles);
-  });
-  await Promise.all([buildLess(), buildMarkdown()]);
+  await buildSite().catch(err => console.error(err));
 }
 
 const isWatch = process.argv.some((arg) => arg === "--watch");
