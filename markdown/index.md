@@ -8,8 +8,8 @@ description: "Personal site of mbkv"
 
 Big things are happening
 
-* Github: [@mbkv](https://github.com/mbkv)
-* Email: [me@mbkv.io](mailto:me@mbkv.io)
-* ~Twitter~ X: [@mbkv_io](https://twitter.com/mbkv_io)
+- Github: [@mbkv](https://github.com/mbkv)
+- Email: [me@mbkv.io](mailto:me@mbkv.io)
+- ~Twitter~ X: [@mbkv_io](https://twitter.com/mbkv_io)
 
 [test page](/testpage.html)

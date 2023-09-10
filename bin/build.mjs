@@ -2,7 +2,7 @@ import less from "less";
 import chokidar from "chokidar";
 import mustache from "mustache";
 import { minify as minifyHtml } from "html-minifier-terser";
-import { minify as minifyJS } from 'terser';
+import { minify as minifyJS } from "terser";
 import { Marked } from "marked";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
@@ -74,30 +74,38 @@ async function buildSite() {
       path.join(publicDir, path.basename(filename, ".md") + ".html"),
       minified,
     );
-  }
+  };
 
   const buildAsJavascript = async (filename) => {
-    const file = await fs.readFile(filename, { encoding: 'utf-8' })
-    const minified = await minifyJS(file)
-    await fs.writeFile(
-      path.join(publicDir, path.basename(filename)),
-      minified.code,
-    )
-  }
+    const file = await fs.readFile(filename, { encoding: "utf-8" });
+    const basename = path.basename(filename);
+    const minified = await minifyJS(
+      { [basename]: file },
+      {
+        sourceMap: {
+          includeSources: true,
+          url: basename + ".map",
+        },
+      },
+    );
+    await Promise.all([
+      fs.writeFile(path.join(publicDir, basename), minified.code),
+      fs.writeFile(path.join(publicDir, basename + ".map"), minified.map),
+    ]);
+  };
 
   for (const filename of siteFiles) {
-    const fullpath = path.join(markdownDir, filename)
+    const fullpath = path.join(markdownDir, filename);
     if (filename.endsWith(".md")) {
       await buildAsMarkdown(fullpath);
-    } else if (filename.endsWith('.js')) {
+    } else if (filename.endsWith(".js")) {
       await buildAsJavascript(fullpath);
     }
   }
-
 }
 
 async function build() {
-  await buildSite().catch(err => console.error(err));
+  await buildSite().catch((err) => console.error(err));
 }
 
 const isWatch = process.argv.some((arg) => arg === "--watch");
