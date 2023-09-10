@@ -1,0 +1,136 @@
+// one light
+// Config -----------------------------------
+@light-theme-hue: 230;
+@light-theme-saturation: 1%;
+@light-theme-brightness: 98%;
+
+
+// Monochrome -----------------------------------
+@light-theme-mono-1: hsl(@light-theme-hue, 8%, 24%);
+@light-theme-mono-2: hsl(@light-theme-hue, 6%, 44%);
+@light-theme-mono-3: hsl(@light-theme-hue, 4%, 64%);
+
+// Colors -----------------------------------
+@light-theme-cyan: hsl(198, 99%, 37%); // <-cyan
+@light-theme-blue: hsl(221, 87%, 60%); // <-blue
+@light-theme-purple: hsl(301, 63%, 40%); // <-purple
+@light-theme-green: hsl(119, 34%, 47%); // <-green
+
+@light-theme-red: hsl(5, 74%, 59%); // <-red 1
+@light-theme-red-2: hsl(344, 84%, 43%); // <-red 2
+
+@light-theme-orange: hsl(41, 99%, 30%); // <-orange 1
+@light-theme-orange-2: hsl(41, 99%, 38%); // <-orange 2
+
+
+// Base colors -----------------------------------
+@light-theme-fg: @light-theme-mono-1;
+@light-theme-bg: hsl(@light-theme-hue, @light-theme-saturation, @light-theme-brightness);
+@light-theme-bg-2: darken(@light-theme-bg, 36%);
+@light-theme-gutter: @light-theme-bg-2;
+@light-theme-guide: fade(@light-theme-fg, 20%);
+@light-theme-accent: hsl(@light-theme-hue, 100%, 66%);
+
+// one dark
+// Config -----------------------------------
+@dark-theme-hue: 220;
+@dark-theme-saturation: 13%;
+@dark-theme-brightness: 18%;
+
+
+// Monochrome -----------------------------------
+@dark-theme-mono-1: hsl(@dark-theme-hue, 14%, 71%); // default text
+@dark-theme-mono-2: hsl(@dark-theme-hue, 9%, 55%);
+@dark-theme-mono-3: hsl(@dark-theme-hue, 10%, 40%);
+
+// Colors -----------------------------------
+@dark-theme-cyan: hsl(187, 47%, 55%); // <-cyan
+@dark-theme-blue: hsl(207, 82%, 66%); // <-blue
+@dark-theme-purple: hsl(286, 60%, 67%); // <-purple
+@dark-theme-green: hsl(95, 38%, 62%); // <-green
+
+@dark-theme-red: hsl(355, 65%, 65%); // <-red 1
+@dark-theme-red-2: hsl(5, 48%, 51%); // <-red 2
+
+@dark-theme-orange: hsl(29, 54%, 61%); // <-orange 1
+@dark-theme-orange-2: hsl(39, 67%, 69%); // <-orange 2
+
+
+// Base colors -----------------------------------
+@dark-theme-fg: @dark-theme-mono-1;
+@dark-theme-bg: hsl(@dark-theme-hue, @dark-theme-saturation, @dark-theme-brightness);
+@dark-theme-bg-2: darken(@dark-theme-bg, 5%, true);
+@dark-theme-gutter: darken(@dark-theme-fg, 26%);
+@dark-theme-guide: fade(@dark-theme-fg, 15%);
+@dark-theme-accent: hsl(@dark-theme-hue, 100%, 66%);
+
+:root {
+  --theme-mono-1: @light-theme-mono-1;
+  --theme-mono-2: @light-theme-mono-2;
+  --theme-mono-3: @light-theme-mono-3;
+
+  --theme-cyan: @light-theme-cyan;
+  --theme-blue: @light-theme-blue;
+  --theme-purple: @light-theme-purple;
+  --theme-green: @light-theme-green;
+  --theme-red: @light-theme-red;
+  --theme-red-2: @light-theme-red-2;
+  --theme-orange: @light-theme-orange;
+  --theme-orange-2: @light-theme-orange-2;
+
+
+  --theme-fg: @light-theme-fg;
+  --theme-bg: @light-theme-bg;
+  --theme-bg-2: @light-theme-bg-2;
+  --theme-gutter: @light-theme-gutter;
+  --theme-guide: @light-theme-guide;
+  --theme-accent: @light-theme-accent;
+
+  --theme-text: @light-theme-fg;
+  --theme-background: @light-theme-bg;
+  --theme-text-quote: @light-theme-mono-3;
+  --theme-keyword: @light-theme-purple;
+  --theme-name: @light-theme-red;
+  --theme-literal: @light-theme-cyan;
+  --theme-string: @light-theme-green;
+  --theme-number: @light-theme-orange;
+  --theme-link: @light-theme-blue;
+  --theme-link-used: @light-theme-purple;
+  --theme-builtin: @light-theme-orange-2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --theme-mono-1: @dark-theme-mono-1;
+    --theme-mono-2: @dark-theme-mono-2;
+    --theme-mono-3: @dark-theme-mono-3;
+
+    --theme-cyan: @dark-theme-cyan;
+    --theme-blue: @dark-theme-blue;
+    --theme-purple: @dark-theme-purple;
+    --theme-green: @dark-theme-green;
+    --theme-red: @dark-theme-red;
+    --theme-red-2: @dark-theme-red-2;
+    --theme-orange: @dark-theme-orange;
+    --theme-orange-2: @dark-theme-orange-2;
+
+    --theme-fg: @dark-theme-fg;
+    --theme-bg: @dark-theme-bg;
+    --theme-bg-2: @dark-theme-bg-2;
+    --theme-gutter: @dark-theme-gutter;
+    --theme-guide: @dark-theme-guide;
+    --theme-accent: @dark-theme-accent;
+
+    --theme-text: @dark-theme-fg;
+    --theme-background: @dark-theme-bg;
+    --theme-text-quote: @dark-theme-mono-3;
+    --theme-keyword: @dark-theme-purple;
+    --theme-name: @dark-theme-red;
+    --theme-literal: @dark-theme-cyan;
+    --theme-string: @dark-theme-green;
+    --theme-number: @dark-theme-orange;
+    --theme-link: @dark-theme-blue;
+    --theme-link-used: @dark-theme-purple;
+    --theme-builtin: @dark-theme-orange-2;
+  }
+}

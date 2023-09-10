@@ -1,0 +1,19 @@
+{
+  "name": "mbkv.io",
+  "dependencies": {
+    "front-matter": "^4.0.2",
+    "highlight.js": "^11.8.0",
+    "html-minifier-terser": "^7.2.0",
+    "less": "^4.2.0",
+    "marked": "^9.0.0",
+    "marked-highlight": "^2.0.5",
+    "mustache": "^4.2.0"
+  },
+  "devDependencies": {
+    "chokidar": "^3.5.3"
+  },
+  "scripts": {
+    "build": "node ./bin/build.mjs",
+    "watch": "node ./bin/build.mjs -- watch"
+  }
+}
