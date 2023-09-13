@@ -25,7 +25,6 @@ const markdownDir = path.join(rootDir, "markdown");
 const baseHtmlEntrypoint = path.join(markdownDir, "base.html");
 const markdownHtmlEntrypoint = path.join(markdownDir, "markdown.html");
 const sitemapXmlEntrypoint = path.join(markdownDir, "sitemap.xml");
-const redirectEntrypoint = path.join(markdownDir, "redirect.html");
 const styleEntrypoint = path.join(rootDir, "styles", "styles.less");
 const markdownOnlyPath = path.join(publicDir, "_");
 mkdirp.sync(markdownOnlyPath);
@@ -51,13 +50,12 @@ const marked = new Marked(
 );
 
 async function buildSite() {
-  const [styles, baseHtml, markdownHtml, sitemapXml, redirectHtml, siteFiles] =
+  const [styles, baseHtml, markdownHtml, sitemapXml, siteFiles] =
     await Promise.all([
       buildLess(),
       readFile(baseHtmlEntrypoint).then((base) => minifyHtml(base)),
       readFile(markdownHtmlEntrypoint).then((base) => minifyHtml(base)),
       readFile(sitemapXmlEntrypoint).then((base) => minifyHtml(base)),
-      readFile(redirectEntrypoint).then((base) => minifyHtml(base)),
       fs.readdir(markdownDir),
     ]);
 
@@ -82,38 +80,61 @@ async function buildSite() {
       content: renderedMarkdown,
     });
     const htmlBasename = path.basename(filename, ".md") + ".html";
-    if (isNaN(new Date(attributes.date))) {
+    if (attributes.date && isNaN(new Date(attributes.date))) {
       console.error(`${filename}: Invalid date ${attributes.date}`);
       return;
     }
+
     let url;
-    let finalPath;
-    let finalPathInternal;
-    if (attributes.noDateInUrl) {
-      finalPath = publicDir;
-      finalPathInternal = markdownOnlyPath;
-      url = "/" + htmlBasename;
-    } else {
+    let dir;
+    let file;
+    let dirInternal;
+    let fileInternal;
+    if (attributes.url) {
+      url = attributes.url;
+      const dirname = path.dirname(url);
+      dir = path.join(publicDir, dirname);
+      dirInternal = path.join(markdownOnlyPath, dirname);
+      file = path.join(publicDir, url);
+      fileInternal = path.join(dirInternal, url);
+    } else if (attributes.date) {
       const datePath = attributes.date.replace(/-/g, "/");
-      finalPath = path.join(publicDir, datePath);
-      finalPathInternal = path.join(markdownOnlyPath, datePath);
-      url = datePath + "/" + htmlBasename;
+      dir = path.join(publicDir, datePath);
+      dirInternal = path.join(markdownOnlyPath, datePath);
+      file = path.join(dir, htmlBasename);
+      fileInternal = path.join(dirInternal, htmlBasename);
+      url = "/" + datePath + "/" + htmlBasename;
+    } else {
+      dir = publicDir;
+      dirInternal = markdownOnlyPath;
+      file = path.join(dir, htmlBasename);
+      fileInternal = path.join(dirInternal, htmlBasename);
+      url = "/" + htmlBasename;
     }
-    await mkdirp(finalPath);
-    await mkdirp(finalPathInternal);
-    const finalUrl = path.join(finalPath, htmlBasename);
-    fs.writeFile(finalUrl, rendered);
-    fs.writeFile(path.join(finalPathInternal, htmlBasename), renderedMarkdown);
+    if (url.endsWith("index.html")) {
+      url = url.slice(0, url.length - "index.html".length);
+    }
+    if (url.endsWith('/')) {
+      url = url.slice(0, url.length - 1)
+    }
+    await Promise.all([mkdirp(dir), mkdirp(dirInternal)]);
+
+    fs.writeFile(file, rendered);
+    fs.writeFile(fileInternal, renderedMarkdown);
 
     if (attributes.oldLinks) {
-      const redirectHtmlFile = mustache.render(redirectHtml, { url });
+      const redirectHtmlFile = mustache.render(baseHtml, {
+        styles,
+        header: `<meta http-equiv="refresh" content="0; url='${url || '/'}'" />`,
+        content: `<a href="${url || '/'}">click this if you were not automatically redirected</a>`,
+      });
       for (const oldLink of attributes.oldLinks) {
         fs.writeFile(path.join(publicDir, oldLink), redirectHtmlFile);
       }
     }
     return {
       url,
-      lastModified: attributes.date,
+      lastModified: attributes.updated ?? attributes.date,
     };
   };
 
