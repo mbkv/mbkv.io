@@ -16,6 +16,6 @@
   },
   "scripts": {
     "build": "node ./bin/build.mjs",
-    "watch": "node ./bin/build.mjs -- watch"
+    "watch": "node ./bin/build.mjs --watch"
   }
 }

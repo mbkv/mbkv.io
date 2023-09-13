@@ -1,8 +1,8 @@
 ---
 title: "About mbkv"
 description: "Big things are happening"
-date: "2023-09-12"
-noDateInUrl: true
+updated: "2023-09-12"
+url: "/index.html"
 ---
 
 Big things are happening
@@ -11,3 +11,4 @@ Big things are happening
 - Email: [me@mbkv.io](mailto:me@mbkv.io)
 - ~Twitter~ X: [@mbkv_io](https://twitter.com/mbkv_io)
 
+[testapp](/testpage.html)

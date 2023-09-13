@@ -1,12 +1,11 @@
 ---
-title: "test page"
+title: "Test page to show off neat markdown features"
 description: "this is a test page don't click on it"
 date: "2023-09-12"
+updated: "2023-09-12"
 oldLinks:
     - /testpage.html
 ---
-
-# Test page to show off neat markdown features
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
