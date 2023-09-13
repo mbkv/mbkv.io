@@ -1,6 +1,9 @@
 ---
 title: "test page"
 description: "this is a test page don't click on it"
+date: "2023-09-12"
+oldLinks:
+    - /testpage.html
 ---
 
 # Test page to show off neat markdown features
@@ -151,6 +154,6 @@ here's some random list
 - bar
 - baz
 
-<canvas ratio="0.5" is="hello-world-canvas"></custom-canvas>
+<canvas ratio="0.5" is="hello-world-canvas"></canvas>
 
-<script async defer src="testpage.js"></script>
+<script async defer src="/testpage.js"></script>

@@ -12,7 +12,6 @@
 
 node_modules
 
-public/*.html
-public/*.css
-public/*.js
-public/*.js.map
+public
+!public/litter.png
+!public/robots.txt
