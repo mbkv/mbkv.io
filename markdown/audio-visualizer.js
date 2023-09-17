@@ -305,32 +305,32 @@ class AudioVisualizer extends HTMLElement {
     const drawSpectrum = () => {
       //Draw spectrum
       this.analyser.getByteFrequencyData(this.frequencyBin);
-      const minWidth = Math.max(plot.width * 0.005, 5);
-      let currentWidth = 0;
+      const minWidth = 5;
+      let start;
       let value = -Infinity;
       for (let i = 0; i < this.frequencyBin.length; i++) {
         const currentX = frequenciesToX[i];
         if (!currentX) {
           continue;
         }
-        const prevX = frequenciesToX[i - 1] ?? plot.left;
-        const barWidth = currentX - prevX;
+        if (start == null) {
+          start = currentX;
+        }
 
-        currentWidth += barWidth;
         value = Math.max(value, this.frequencyBin[i]);
-        if (currentWidth > minWidth) {
+        if (currentX - start > minWidth) {
           const ratio = value / 255;
           const barHeight = ratio * plot.height;
           ctx.fillStyle = themeRed;
           ctx.fillStyle = darken(ctx.fillStyle, (ratio - 0.5) * -0.5);
           ctx.fillRect(
-            currentX - currentWidth,
+            start,
             plot.height - barHeight + plot.top,
-            currentWidth,
+            minWidth,
             barHeight
           );
 
-          currentWidth = 0;
+          start = start + minWidth;
           value = -Infinity;
         }
       }
