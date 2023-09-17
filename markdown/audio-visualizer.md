@@ -4,7 +4,7 @@ description: "Set up a audio spectrum analyzer"
 updated: "2023-09-17"
 ---
 
-<audio-visualizer />
+<audio-visualizer></audio-visualizer>
 
 <style>
   main {
