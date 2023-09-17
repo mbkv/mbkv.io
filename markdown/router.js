@@ -2,7 +2,7 @@ const $ = document.querySelectorAll.bind(document);
 const getElementById = document.getElementById.bind(document)
 const getElementsByTagName = document.getElementsByTagName.bind(document);
 
-const pushHistory = async (url) => {
+const setRoute = async (url) => {
   try {
     const markdownOnlyFile = url.endsWith('/') ? url + '_' : url + '/_';
     const resp = await fetch(markdownOnlyFile);
@@ -17,7 +17,6 @@ const pushHistory = async (url) => {
 
     main.innerHTML = text;
     const newRouterProps = JSON.parse((getElementById('router-props')).innerText)
-    history.pushState(newRouterProps, '', url);
 
     const title = getElementsByTagName('title').item(0);
     const description = $("meta[name=description]")
@@ -29,6 +28,7 @@ const pushHistory = async (url) => {
     }
     title.innerText = newRouterProps.title;
     description.content = newRouterProps.content;
+    return newRouterProps
   } catch (e) {
     console.error(e)
     document.location = url
@@ -41,6 +41,14 @@ document.body.addEventListener('click', event => {
   if (target && target instanceof HTMLAnchorElement && location.hostname === new URL(target.href).hostname) {
     event.preventDefault();
 
-    pushHistory(target.href)
+    setRoute(target.href).then(newRouterProps => {
+      if (newRouterProps) {
+        history.pushState(newRouterProps, '', target.href);
+      }
+    })
   }
+})
+
+window.addEventListener('popstate', () => {
+  setRoute(document.location.href);
 })
