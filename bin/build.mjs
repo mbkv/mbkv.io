@@ -18,7 +18,7 @@ const minifyHtml = (source) =>
 const readFile = (filename) => fs.readFile(filename, { encoding: "utf-8" });
 
 const rootDir = fsSync.realpathSync(
-  path.join(path.dirname(process.argv[1]), ".."),
+  path.join(path.dirname(process.argv[1]), "..")
 );
 const publicDir = path.join(rootDir, "public");
 const markdownDir = path.join(rootDir, "markdown");
@@ -44,7 +44,7 @@ const marked = new Marked(
       const language = hljs.getLanguage(lang) ? lang : "plaintext";
       return hljs.highlight(code, { language }).value;
     },
-  }),
+  })
 );
 
 async function buildSite() {
@@ -56,6 +56,8 @@ async function buildSite() {
       readFile(sitemapXmlEntrypoint).then((base) => minifyHtml(base)),
       fs.readdir(markdownDir),
     ]);
+
+  fs.writeFile(path.join(publicDir, "styles.css"), styles);
 
   const buildAsMarkdown = async (filename) => {
     const markdown = await readFile(filename);
@@ -70,12 +72,11 @@ async function buildSite() {
     console.assert(attributes.title, "Each document must have a title!");
     console.assert(
       attributes.description,
-      "Each document must have a description!",
+      "Each document must have a description!"
     );
 
     const rendered = mustache.render(baseHtml, {
       ...attributes,
-      styles,
       content: renderedMarkdown,
     });
     const htmlBasename = path.basename(filename, ".md");
@@ -85,29 +86,29 @@ async function buildSite() {
     }
 
     const normalizeUrl = (url) => {
-      if (url.endsWith('/index.html') || url.endsWith('\\index.html')) {
-        url = url.slice(0, url.length - '/index.html'.length);
+      if (url.endsWith("/index.html") || url.endsWith("\\index.html")) {
+        url = url.slice(0, url.length - "/index.html".length);
       }
-      if (url.endsWith('.html')) {
-        url = url.slice(0, url.length - '.html'.length);
+      if (url.endsWith(".html")) {
+        url = url.slice(0, url.length - ".html".length);
       }
-      if (url.endsWith('/')) {
-        url.slice(0, url.length - '/'.length);
+      if (url.endsWith("/")) {
+        url.slice(0, url.length - "/".length);
       }
       return url;
-    }
+    };
 
     // the url the user sees
     let url;
     // the FULL directory that stores all the HTML files. each article has its
     // own directory
-    let directory
+    let directory;
 
     if (attributes.url) {
       url = normalizeUrl(attributes.url);
       directory = path.join(publicDir, url);
     } else if (attributes.date) {
-      const datePath = attributes.date.replace(/-/g, '/');
+      const datePath = attributes.date.replace(/-/g, "/");
       url = "/" + datePath + "/" + htmlBasename;
       directory = path.join(publicDir, datePath, htmlBasename);
     } else {
@@ -115,10 +116,10 @@ async function buildSite() {
       directory = path.join(publicDir, htmlBasename);
     }
 
-    await mkdirp(directory)
+    await mkdirp(directory);
 
-    fs.writeFile(path.join(directory, 'index.html'), rendered);
-    fs.writeFile(path.join(directory, '_.html'), renderedMarkdown);
+    fs.writeFile(path.join(directory, "index.html"), rendered);
+    fs.writeFile(path.join(directory, "_.html"), renderedMarkdown);
 
     return {
       path: normalizeUrl(url),
@@ -137,7 +138,7 @@ async function buildSite() {
           includeSources: true,
           url: basename + ".map",
         },
-      },
+      }
     );
     await Promise.all([
       fs.writeFile(path.join(publicDir, basename), minified.code),

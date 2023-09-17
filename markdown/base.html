@@ -1,38 +1,33 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{title}}</title>
-    <meta name="description" content="{{description}}" />
-    <style>
-      {{{styles}}}
-    </style>
-    {{{header}}}
-  </head>
 
-  <body>
-    <nav id="nav">
-      <div class="header">
-        <a
-          href="/"
-          class="brand"
-          rel="home"
-          aria-label="Go back to the homepage"
-        ></a>
-        <!-- <button id="nav-burger" class="burger"></button> -->
-      </div>
-      <!-- <div class="content">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}" />
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <nav id="nav">
+    <div class="header">
+      <a href="/" class="brand" rel="home" aria-label="Go back to the homepage"></a>
+      <!-- <button id="nav-burger" class="burger"></button> -->
+    </div>
+    <!-- <div class="content">
       <a href="/" class="link">Home</a>
       <a href="/a" class="link">test link</a>
       <a href="/b" class="link">test link2</a>
       <a href="/c" class="link">test link3</a>
     </div> -->
-    </nav>
+  </nav>
 
-    <main id="main">
-      {{{content}}}
-    </main>
-    <script type="module" async defer src="/router.js"></script>
-  </body>
+  <main id="main">
+    {{{content}}}
+  </main>
+  <script type="module" async defer src="/router.js"></script>
+</body>
+
 </html>

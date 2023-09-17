@@ -65,6 +65,7 @@
 @dark-theme-accent: hsl(@dark-theme-hue, 100%, 66%);
 
 :root {
+  --theme-type: light;
   --theme-mono-1: @light-theme-mono-1;
   --theme-mono-2: @light-theme-mono-2;
   --theme-mono-3: @light-theme-mono-3;
@@ -100,6 +101,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+  --theme-type: dark;
     --theme-mono-1: @dark-theme-mono-1;
     --theme-mono-2: @dark-theme-mono-2;
     --theme-mono-3: @dark-theme-mono-3;
