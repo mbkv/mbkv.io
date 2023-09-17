@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     {{#pages}}
    <url>
-       <loc>https://mbkv.io{{{url}}}</loc>
+       <loc>https://mbkv.io{{{path}}}</loc>
        <lastmod>{{lastModified}}</lastmod>
    </url>
    {{/pages}}

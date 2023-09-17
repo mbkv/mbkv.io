@@ -11,4 +11,4 @@ Big things are happening
 - Email: [me@mbkv.io](mailto:me@mbkv.io)
 - ~Twitter~ X: [@mbkv_io](https://twitter.com/mbkv_io)
 
-[testapp](/testpage.html)
+[testapp](/2023/09/12/testpage)

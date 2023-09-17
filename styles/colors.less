@@ -23,11 +23,9 @@
 
 // Base colors -----------------------------------
 @light-theme-fg: @light-theme-mono-1;
-@light-theme-bg: hsl(
-  @light-theme-hue,
-  @light-theme-saturation,
-  @light-theme-brightness
-);
+@light-theme-bg: hsl(@light-theme-hue,
+    @light-theme-saturation,
+    @light-theme-brightness);
 @light-theme-bg-2: darken(@light-theme-bg, 10%);
 @light-theme-gutter: darken(@light-theme-bg, 36%);
 @light-theme-guide: fade(@light-theme-fg, 20%);
@@ -58,11 +56,9 @@
 
 // Base colors -----------------------------------
 @dark-theme-fg: @dark-theme-mono-1;
-@dark-theme-bg: hsl(
-  @dark-theme-hue,
-  @dark-theme-saturation,
-  @dark-theme-brightness
-);
+@dark-theme-bg: hsl(@dark-theme-hue,
+    @dark-theme-saturation,
+    @dark-theme-brightness);
 @dark-theme-bg-2: darken(@dark-theme-bg, 5%, true);
 @dark-theme-gutter: darken(@dark-theme-fg, 26%);
 @dark-theme-guide: fade(@dark-theme-fg, 15%);

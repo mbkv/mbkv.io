@@ -26,8 +26,6 @@ const baseHtmlEntrypoint = path.join(markdownDir, "base.html");
 const markdownHtmlEntrypoint = path.join(markdownDir, "markdown.html");
 const sitemapXmlEntrypoint = path.join(markdownDir, "sitemap.xml");
 const styleEntrypoint = path.join(rootDir, "styles", "styles.less");
-const markdownOnlyPath = path.join(publicDir, "_");
-mkdirp.sync(markdownOnlyPath);
 
 async function buildLess() {
   const file = await readFile(styleEntrypoint);
@@ -67,6 +65,7 @@ async function buildSite() {
     renderedMarkdown = mustache.render(markdownHtml, {
       ...attributes,
       content: renderedMarkdown,
+      routerProps: JSON.stringify(attributes),
     });
     console.assert(attributes.title, "Each document must have a title!");
     console.assert(
@@ -79,61 +78,50 @@ async function buildSite() {
       styles,
       content: renderedMarkdown,
     });
-    const htmlBasename = path.basename(filename, ".md") + ".html";
+    const htmlBasename = path.basename(filename, ".md");
     if (attributes.date && isNaN(new Date(attributes.date))) {
       console.error(`${filename}: Invalid date ${attributes.date}`);
       return;
     }
 
-    let url;
-    let dir;
-    let file;
-    let dirInternal;
-    let fileInternal;
-    if (attributes.url) {
-      url = attributes.url;
-      const dirname = path.dirname(url);
-      dir = path.join(publicDir, dirname);
-      dirInternal = path.join(markdownOnlyPath, dirname);
-      file = path.join(publicDir, url);
-      fileInternal = path.join(dirInternal, url);
-    } else if (attributes.date) {
-      const datePath = attributes.date.replace(/-/g, "/");
-      dir = path.join(publicDir, datePath);
-      dirInternal = path.join(markdownOnlyPath, datePath);
-      file = path.join(dir, htmlBasename);
-      fileInternal = path.join(dirInternal, htmlBasename);
-      url = "/" + datePath + "/" + htmlBasename;
-    } else {
-      dir = publicDir;
-      dirInternal = markdownOnlyPath;
-      file = path.join(dir, htmlBasename);
-      fileInternal = path.join(dirInternal, htmlBasename);
-      url = "/" + htmlBasename;
-    }
-    if (url.endsWith("index.html")) {
-      url = url.slice(0, url.length - "index.html".length);
-    }
-    if (url.endsWith('/')) {
-      url = url.slice(0, url.length - 1)
-    }
-    await Promise.all([mkdirp(dir), mkdirp(dirInternal)]);
-
-    fs.writeFile(file, rendered);
-    fs.writeFile(fileInternal, renderedMarkdown);
-
-    if (attributes.oldLinks) {
-      const redirectHtmlFile = mustache.render(baseHtml, {
-        styles,
-        header: `<meta http-equiv="refresh" content="0; url='${url || '/'}'" />`,
-        content: `<a href="${url || '/'}">click this if you were not automatically redirected</a>`,
-      });
-      for (const oldLink of attributes.oldLinks) {
-        fs.writeFile(path.join(publicDir, oldLink), redirectHtmlFile);
+    const normalizeUrl = (url) => {
+      if (url.endsWith('/index.html') || url.endsWith('\\index.html')) {
+        url = url.slice(0, url.length - '/index.html'.length);
       }
+      if (url.endsWith('.html')) {
+        url = url.slice(0, url.length - '.html'.length);
+      }
+      if (url.endsWith('/')) {
+        url.slice(0, url.length - '/'.length);
+      }
+      return url;
     }
+
+    // the url the user sees
+    let url;
+    // the FULL directory that stores all the HTML files. each article has its
+    // own directory
+    let directory
+
+    if (attributes.url) {
+      url = normalizeUrl(attributes.url);
+      directory = path.join(publicDir, url);
+    } else if (attributes.date) {
+      const datePath = attributes.date.replace(/-/g, '/');
+      url = "/" + datePath + "/" + htmlBasename;
+      directory = path.join(publicDir, datePath, htmlBasename);
+    } else {
+      url = "/" + htmlBasename;
+      directory = path.join(publicDir, htmlBasename);
+    }
+
+    await mkdirp(directory)
+
+    fs.writeFile(path.join(directory, 'index.html'), rendered);
+    fs.writeFile(path.join(directory, '_.html'), renderedMarkdown);
+
     return {
-      url,
+      path: normalizeUrl(url),
       lastModified: attributes.updated ?? attributes.date,
     };
   };
@@ -144,6 +132,7 @@ async function buildSite() {
     const minified = await minifyJS(
       { [basename]: file },
       {
+        // module: true,
         sourceMap: {
           includeSources: true,
           url: basename + ".map",
