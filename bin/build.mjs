@@ -132,7 +132,7 @@ async function buildSite() {
     const minified = await minifyJS(
       { [basename]: file },
       {
-        // module: true,
+        module: true,
         sourceMap: {
           includeSources: true,
           url: basename + ".map",

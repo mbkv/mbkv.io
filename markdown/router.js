@@ -2,8 +2,8 @@ const $ = document.querySelectorAll.bind(document);
 const getElementById = document.getElementById.bind(document)
 const getElementsByTagName = document.getElementsByTagName.bind(document);
 
-const pushHistory = (url) => {
-  const inner = async () => {
+const pushHistory = async (url) => {
+  try {
     const markdownOnlyFile = url.endsWith('/') ? url + '_' : url + '/_';
     const resp = await fetch(markdownOnlyFile);
     if (!resp.ok) {
@@ -29,12 +29,11 @@ const pushHistory = (url) => {
     }
     title.innerText = newRouterProps.title;
     description.content = newRouterProps.content;
-  }
-
-  return inner().catch(e => {
+  } catch (e) {
     console.error(e)
     document.location = url
-  })
+  }
+
 }
 
 document.body.addEventListener('click', event => {
