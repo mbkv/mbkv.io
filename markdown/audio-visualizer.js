@@ -22,6 +22,8 @@ const css = `
 }
 form {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 .sample {
   margin-left: auto;
@@ -240,7 +242,7 @@ class AudioVisualizer extends HTMLElement {
 
     const drawMediumText = this.canvas.width > 1000;
     const drawText = this.canvas.width > 425;
-    const drawMediumMarks = drawText;
+    const drawMediumMarks = drawMediumText;
 
     const themeText = this.computedStyles.getPropertyValue("--theme-text");
     const themeRed = this.computedStyles.getPropertyValue("--theme-red");
@@ -303,7 +305,7 @@ class AudioVisualizer extends HTMLElement {
     const drawSpectrum = () => {
       //Draw spectrum
       this.analyser.getByteFrequencyData(this.frequencyBin);
-      const minWidth = plot.width * 0.005;
+      const minWidth = Math.max(plot.width * 0.005, 5);
       let currentWidth = 0;
       let value = -Infinity;
       for (let i = 0; i < this.frequencyBin.length; i++) {
@@ -425,6 +427,7 @@ class AudioVisualizer extends HTMLElement {
       ctx.fillStyle = themeText;
       ctx.strokeStyle = themeText;
       ctx.lineWidth = 1;
+      ctx.font = "16px sans-serif";
       ctx.setLineDash([10, 10]);
       for (let db = 0; db > -120; db -= 30) {
         if (db === 0) {
