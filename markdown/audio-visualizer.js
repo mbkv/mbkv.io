@@ -100,10 +100,22 @@ class AudioVisualizer extends HTMLElement {
     super();
 
     this.attachShadow({ mode: "open" });
-    this.canvas = h("canvas", { className: "canvas" });
+    this.canvas = h("canvas", {
+      className: "canvas",
+      onclick: () => {
+        if (this.audio.paused) {
+          this.audio.play();
+        } else {
+          this.audio.pause();
+        }
+      },
+    });
     this.canvasContainer = h("div", { className: "container" }, this.canvas);
     this.ctx = this.canvas.getContext("2d");
-    this.audio = h("audio", { controls: true, className: "audio" });
+    this.audio = h("audio", {
+      controls: true,
+      className: "audio",
+    });
     this.name = h("div");
     const wrapper = h(
       "div",
@@ -309,7 +321,11 @@ class AudioVisualizer extends HTMLElement {
   }
 
   loop() {
-    window.requestAnimationFrame(() => {
+    if (this.loopId) {
+      return;
+    }
+    this.loopId = window.requestAnimationFrame(() => {
+      this.loopId = undefined;
       if (!this.isConnected) {
         this.loopRunning = false;
         return;
@@ -317,6 +333,11 @@ class AudioVisualizer extends HTMLElement {
       this.render();
       this.loop();
     });
+  }
+
+  cancelLoop() {
+    cancelAnimationFrame(this.loopId);
+    this.loopId = undefined;
   }
 
   render() {
