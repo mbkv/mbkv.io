@@ -141,10 +141,12 @@ class AudioVisualizer extends HTMLElement {
     this.canvas.width = this.canvasContainer.clientWidth;
     this.canvas.height = this.canvasContainer.clientHeight;
     this.computedStyles = window.getComputedStyle(this);
+    this.setPageSizeDependentVariables();
 
     this.resizeObserver = new ResizeObserver(() => {
       this.canvas.width = this.canvasContainer.clientWidth;
       this.canvas.height = this.canvasContainer.clientHeight;
+      this.setPageSizeDependentVariables();
       this.render();
     });
     this.resizeObserver.observe(this.canvasContainer);
@@ -215,11 +217,94 @@ class AudioVisualizer extends HTMLElement {
       for (let i = 0; i < this.frequencies.length; i++) {
         this.frequencies[i] = i + 1 * frequencyPerBin;
       }
+      this.setPageSizeDependentVariables();
     }
 
     if (!this.loopRunning) {
       this.loopRunning = true;
       this.loop();
+    }
+  }
+
+  setPageSizeDependentVariables() {
+    if (!this.pageSizeVariables) {
+      this.pageSizeVariables = {};
+    }
+    const vars = this.pageSizeVariables;
+
+    vars.drawMediumText = this.canvas.width > 1000;
+    vars.drawText = this.canvas.width > 425;
+    vars.drawMediumMarks = vars.drawMediumText;
+
+    const plot = (vars.plot = (() => {
+      const startValue = 20;
+      const endValue = 20000;
+      const startX = Math.log10(startValue);
+      const endX = Math.log10(endValue);
+      const plotSize = {
+        startValue,
+        endValue,
+        startX: startX,
+        endX: endX,
+        diffX: endX - startX,
+      };
+      const leftPadding = 32;
+      const bottomPadding = vars.drawText ? 32 : 0;
+      return {
+        ...plotSize,
+        leftPadding,
+        bottomPadding,
+        left: leftPadding,
+        right: this.canvas.width,
+        width: this.canvas.width - leftPadding,
+        top: 0,
+        bottom: bottomPadding,
+        height: this.canvas.height - bottomPadding,
+      };
+    })());
+
+    const getXFromFrequency = (vars.getXFromFrequency = (freq) => {
+      if (freq < plot.startValue || freq > plot.endValue) {
+        return;
+      }
+
+      const x =
+        ((Math.log10(freq) - plot.startX) / plot.diffX) * plot.width +
+        plot.left;
+      return clamp(x, plot.left, plot.right);
+    });
+
+    if (this.audioContextInitted) {
+      if (!vars.frequenciesToX) {
+        vars.frequenciesToX = Array(this.frequencies.length);
+      }
+
+      const frequenciesToX = vars.frequenciesToX;
+      if (this.audioContextInitted) {
+        for (let i = 0; i < this.frequencies.length; i++) {
+          frequenciesToX[i] = getXFromFrequency(this.frequencies[i]);
+        }
+      }
+
+      const minBinPxs = 5;
+      const logarithmicBins = (vars.logarithmicBins = []);
+      let current = {
+        startI: frequenciesToX.findIndex((value) => value != null),
+        width: minBinPxs,
+      };
+      current.startPx = frequenciesToX[current.startI];
+      for (let i = current.startI; i < frequenciesToX.length; i++) {
+        const thisPx = frequenciesToX[i];
+        if (thisPx - current.startPx > minBinPxs) {
+          current.endI = i;
+          logarithmicBins.push(current);
+          current = {
+            startI: i + 1,
+            startPx: current.startPx + minBinPxs,
+            width: minBinPxs,
+          };
+        }
+      }
     }
   }
 
@@ -240,55 +325,17 @@ class AudioVisualizer extends HTMLElement {
       return;
     }
 
-    const drawMediumText = this.canvas.width > 1000;
-    const drawText = this.canvas.width > 425;
-    const drawMediumMarks = drawMediumText;
-
     const themeText = this.computedStyles.getPropertyValue("--theme-text");
     const themeRed = this.computedStyles.getPropertyValue("--theme-red");
 
-    const plot = (() => {
-      const startValue = 20;
-      const endValue = 20000;
-      const startX = Math.log10(startValue);
-      const endX = Math.log10(endValue);
-      const plotSize = {
-        startValue,
-        endValue,
-        startX: startX,
-        endX: endX,
-        diffX: endX - startX,
-      };
-      const leftPadding = 32;
-      const bottomPadding = drawText ? 32 : 0;
-      return {
-        ...plotSize,
-        leftPadding,
-        bottomPadding,
-        left: leftPadding,
-        right: this.canvas.width,
-        width: this.canvas.width - leftPadding,
-        top: 0,
-        bottom: bottomPadding,
-        height: this.canvas.height - bottomPadding,
-      };
-    })();
-
-    const getXFromFrequency = (freq) => {
-      if (freq < plot.startValue || freq > plot.endValue) {
-        return;
-      }
-
-      const x =
-        ((Math.log10(freq) - plot.startX) / plot.diffX) * plot.width +
-        plot.left;
-      return clamp(x, plot.left, plot.right);
-    };
-
-    let frequenciesToX;
-    if (this.audioContextInitted) {
-      frequenciesToX = this.frequencies.map(getXFromFrequency);
-    }
+    const {
+      getXFromFrequency,
+      plot,
+      drawText,
+      drawMediumMarks,
+      drawMediumText,
+      logarithmicBins,
+    } = this.pageSizeVariables;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -305,34 +352,22 @@ class AudioVisualizer extends HTMLElement {
     const drawSpectrum = () => {
       //Draw spectrum
       this.analyser.getByteFrequencyData(this.frequencyBin);
-      const minWidth = 5;
-      let start;
-      let value = -Infinity;
-      for (let i = 0; i < this.frequencyBin.length; i++) {
-        const currentX = frequenciesToX[i];
-        if (!currentX) {
-          continue;
-        }
-        if (start == null) {
-          start = currentX;
-        }
+      for (let i = 0; i < logarithmicBins.length; i++) {
+        const bin = logarithmicBins[i];
+        const value = Math.max(
+          ...this.frequencyBin.slice(bin.startI, bin.endI + 1)
+        );
 
-        value = Math.max(value, this.frequencyBin[i]);
-        if (currentX - start > minWidth) {
-          const ratio = value / 255;
-          const barHeight = ratio * plot.height;
-          ctx.fillStyle = themeRed;
-          ctx.fillStyle = darken(ctx.fillStyle, (ratio - 0.5) * -0.5);
-          ctx.fillRect(
-            start,
-            plot.height - barHeight + plot.top,
-            minWidth,
-            barHeight
-          );
-
-          start = start + minWidth;
-          value = -Infinity;
-        }
+        const ratio = value / 255;
+        const barHeight = ratio * plot.height;
+        ctx.fillStyle = themeRed;
+        ctx.fillStyle = darken(ctx.fillStyle, (ratio - 0.5) * -0.5);
+        ctx.fillRect(
+          bin.startPx,
+          plot.height - barHeight + plot.top,
+          5,
+          barHeight
+        );
       }
     };
     const drawVerticalLines = () => {
