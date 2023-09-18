@@ -3,7 +3,7 @@ import chokidar from "chokidar";
 import mustache from "mustache";
 import { minify as _minifyHtml } from "html-minifier-terser";
 import { minify as minifyJS } from "terser";
-import { Marked } from "marked";
+import { Marked, Renderer } from "marked";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
 import frontMatter from "front-matter";
@@ -46,6 +46,15 @@ const marked = new Marked(
     },
   })
 );
+const renderer = new Renderer();
+renderer.paragraph = (text) => {
+  if (text.startsWith("<")) {
+    // probably a html tag
+    return text;
+  }
+  return `<p>${text}</p>`;
+};
+marked.use({ renderer });
 
 async function buildSite() {
   const [styles, baseHtml, markdownHtml, sitemapXml, siteFiles] =
