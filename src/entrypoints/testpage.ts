@@ -1,38 +1,4 @@
-/**
- * lerp
- * @param {number} a
- * @param {number} b
- * @param {number} t
- */
-const lerp = (a, b, t) => {
-  return a + t * (b - a);
-};
-
-/**
- * @param {string} hex
- */
-const parseHexColor = (hex) => ({
-  r: parseInt(hex.substring(1, 3), 16),
-  g: parseInt(hex.substring(3, 5), 16),
-  b: parseInt(hex.substring(5, 7), 16),
-});
-
-/**
- * Lerp between two hex color values
- * @param {string} hex1
- * @param {string} hex2
- * @param {number} t
- */
-const lerpColor = (hex1, hex2, t) => {
-  const color1 = parseHexColor(hex1);
-  const color2 = parseHexColor(hex2);
-
-  const r = Math.floor(lerp(color1.r, color2.r, t)).toString(16).padStart(2, '0');
-  const g = Math.floor(lerp(color1.g, color2.g, t)).toString(16).padStart(2, '0');
-  const b = Math.floor(lerp(color1.b, color2.b, t)).toString(16).padStart(2, '0');
-
-  return `#${r}${g}${b}`;
-};
+import { lerpColor } from "../utils";
 
 class CustomCanvasElement extends HTMLCanvasElement {
   themeNames = [
@@ -46,26 +12,30 @@ class CustomCanvasElement extends HTMLCanvasElement {
 
   time = 0;
 
+  ctx = this.getContext("2d")
+
+  computedStyle = window.getComputedStyle(this);
+
+  rafLoopId: ReturnType<typeof requestAnimationFrame> | undefined;
+
   constructor() {
     super();
 
     this.resizeHandler = this.resizeHandler.bind(this);
     this.rafLoop = this.rafLoop.bind(this);
-    this.ctx = this.getContext("2d");
-    this.blinkState = 0;
-    this.computedStyles = window.getComputedStyle(this);
-    this.rafLoopId = undefined;
   }
 
   connectedCallback() {
     this.resizeHandler();
-    this.computedStyles = window.getComputedStyle(this);
+    this.computedStyle = window.getComputedStyle(this);
     window.addEventListener("resize", this.resizeHandler);
     this.rafLoop();
   }
   disconnectedCallback() {
     window.removeEventListener("resize", this.resizeHandler);
-    cancelAnimationFrame(this.rafLoopId);
+    if (this.rafLoopId) {
+      cancelAnimationFrame(this.rafLoopId);
+    }
   }
 
   resizeHandler() {
@@ -85,7 +55,10 @@ class CustomCanvasElement extends HTMLCanvasElement {
   }
 
   draw() {
-    this.ctx.fillStyle = this.computedStyles.getPropertyValue("--theme-bg-2");
+    if (!this.ctx) {
+      return;
+    }
+    this.ctx.fillStyle = this.computedStyle.getPropertyValue("--theme-bg-2");
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     let border = 50;
@@ -105,8 +78,8 @@ class CustomCanvasElement extends HTMLCanvasElement {
       const index = Math.floor(scaled) % this.themeNames.length;
       const percentage = scaled - Math.floor(scaled);
 
-      const raw1 = this.computedStyles.getPropertyValue(this.themeNames[index]);
-      const raw2 = this.computedStyles.getPropertyValue(
+      const raw1 = this.computedStyle.getPropertyValue(this.themeNames[index]);
+      const raw2 = this.computedStyle.getPropertyValue(
         this.themeNames[(index + 1) % this.themeNames.length],
       );
 

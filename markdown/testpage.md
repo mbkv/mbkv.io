@@ -4,7 +4,7 @@ description: "this is a test page don't click on it"
 date: "2023-09-12"
 updated: "2023-09-12"
 oldLinks:
-    - /testpage.html
+  - /testpage.html
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -31,7 +31,7 @@ import fsSync from "fs";
 import fs from "fs/promises";
 
 const rootDir = fsSync.realpathSync(
-  path.join(path.dirname(process.argv[1]), ".."),
+  path.join(path.dirname(process.argv[1]), "..")
 );
 const publicDir = path.join(rootDir, "public");
 const markdownDir = path.join(rootDir, "markdown");
@@ -55,7 +55,7 @@ const marked = new Marked(
       const language = hljs.getLanguage(lang) ? lang : "plaintext";
       return hljs.highlight(code, { language }).value;
     },
-  }),
+  })
 );
 
 async function buildSite() {
@@ -73,11 +73,11 @@ async function buildSite() {
     const renderedMarkdown = marked.parse(metadata.body);
     console.assert(
       metadata.attributes.title,
-      "Each document must have a title!",
+      "Each document must have a title!"
     );
     console.assert(
       metadata.attributes.description,
-      "Each document must have a description!",
+      "Each document must have a description!"
     );
     const rendered = mustache.render(baseHtml, {
       title: metadata.attributes.title,
@@ -91,7 +91,7 @@ async function buildSite() {
     });
     fs.writeFile(
       path.join(publicDir, path.basename(filename, ".md") + ".html"),
-      minified,
+      minified
     );
   };
 
@@ -105,7 +105,7 @@ async function buildSite() {
           includeSources: true,
           url: basename + ".map",
         },
-      },
+      }
     );
     await Promise.all([
       fs.writeFile(path.join(publicDir, basename), minified.code),
@@ -140,7 +140,6 @@ if (isWatch) {
 } else {
   build();
 }
-
 ```
 
 here's some random list
@@ -155,4 +154,4 @@ here's some random list
 
 <canvas ratio="0.5" is="hello-world-canvas"></canvas>
 
-<script async defer src="/testpage.js"></script>
+<script type="module" async defer src="/testpage.js"></script>

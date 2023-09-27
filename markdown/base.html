@@ -27,7 +27,16 @@
   <main id="main">
     {{{content}}}
   </main>
-  <script type="module" async defer src="/router.js"></script>
+  <script type="module" async defer src="/index.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZB96YFC6MK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZB96YFC6MK');
+  </script>
 </body>
 
 </html>

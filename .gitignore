@@ -15,3 +15,6 @@ node_modules
 public
 !public/litter.png
 !public/robots.txt
+
+.rollup.cache
+*.tsbuildinfo

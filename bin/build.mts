@@ -2,7 +2,6 @@ import less from "less";
 import chokidar from "chokidar";
 import mustache from "mustache";
 import { minify as _minifyHtml } from "html-minifier-terser";
-import { minify as minifyJS } from "terser";
 import { Marked, Renderer } from "marked";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
@@ -12,10 +11,10 @@ import fsSync from "fs";
 import fs from "fs/promises";
 import { mkdirp } from "mkdirp";
 
-const minifyHtml = (source) =>
+const minifyHtml = (source: string) =>
   _minifyHtml(source, { collapseWhitespace: true, removeComments: true });
 
-const readFile = (filename) => fs.readFile(filename, { encoding: "utf-8" });
+const readFile = (filename: string) => fs.readFile(filename, { encoding: "utf-8" });
 
 const rootDir = fsSync.realpathSync(
   path.join(path.dirname(process.argv[1]), "..")
@@ -34,7 +33,7 @@ async function buildLess() {
     paths: [path.dirname(styleEntrypoint)],
     compress: true,
   });
-  return built.css;
+  return fs.writeFile(path.join(publicDir, "styles.css"), built.css);
 }
 
 const marked = new Marked(
@@ -57,49 +56,49 @@ renderer.paragraph = (text) => {
 marked.use({ renderer });
 
 async function buildSite() {
-  const [styles, baseHtml, markdownHtml, sitemapXml, siteFiles] =
-    await Promise.all([
-      buildLess(),
-      readFile(baseHtmlEntrypoint).then((base) => minifyHtml(base)),
-      readFile(markdownHtmlEntrypoint).then((base) => minifyHtml(base)),
-      readFile(sitemapXmlEntrypoint).then((base) => minifyHtml(base)),
-      fs.readdir(markdownDir),
-    ]);
+  const [pageTemplate, postTemplate, sitemapXmlTemplate, siteFiles] = await Promise.all([
+    readFile(baseHtmlEntrypoint).then((base) => minifyHtml(base)),
+    readFile(markdownHtmlEntrypoint).then((base) => minifyHtml(base)),
+    readFile(sitemapXmlEntrypoint).then((base) => minifyHtml(base)),
+    fs.readdir(markdownDir),
+  ]);
 
-  fs.writeFile(path.join(publicDir, "styles.css"), styles);
+  const buildAsMarkdown = async (filename: string) => {
+    const { attributes, fragment, html } = await (async () => {
+      const markdown = await readFile(filename);
+      const { attributes, body } = (frontMatter as any)(markdown);
+      let fragment = await marked.parse(body);
+      fragment = await minifyHtml(fragment);
+      fragment = mustache.render(postTemplate, {
+        ...attributes,
+        content: fragment,
+        routerProps: JSON.stringify(attributes),
+      });
+      console.assert(attributes.title, "Each document must have a title!");
+      console.assert(
+        attributes.description,
+        "Each document must have a description!"
+      );
 
-  const buildAsMarkdown = async (filename) => {
-    const markdown = await readFile(filename);
-    const { attributes, body } = frontMatter(markdown);
-    let renderedMarkdown = marked.parse(body);
-    renderedMarkdown = await minifyHtml(renderedMarkdown);
-    renderedMarkdown = mustache.render(markdownHtml, {
-      ...attributes,
-      content: renderedMarkdown,
-      routerProps: JSON.stringify(attributes),
-    });
-    console.assert(attributes.title, "Each document must have a title!");
-    console.assert(
-      attributes.description,
-      "Each document must have a description!"
-    );
+      const html = mustache.render(pageTemplate, {
+        ...attributes,
+        content: fragment,
+      });
 
-    const rendered = mustache.render(baseHtml, {
-      ...attributes,
-      content: renderedMarkdown,
-    });
-    const htmlBasename = path.basename(filename, ".md");
-    if (attributes.date && isNaN(new Date(attributes.date))) {
+      return { fragment, html, attributes };
+    })();
+
+    if (attributes.date && Number.isNaN(+new Date(attributes.date))) {
       console.error(`${filename}: Invalid date ${attributes.date}`);
       return;
     }
 
-    const normalizeUrl = (url) => {
-      if (url.endsWith("/index.html") || url.endsWith("\\index.html")) {
-        url = url.slice(0, url.length - "/index.html".length);
-      }
+    const normalizeUrl = (url: string) => {
       if (url.endsWith(".html")) {
         url = url.slice(0, url.length - ".html".length);
+      }
+      if (url.match(/[/\\]index$/)) {
+        url = url.slice(0, url.length - "/index".length);
       }
       if (url.endsWith("/")) {
         url.slice(0, url.length - "/".length);
@@ -108,11 +107,12 @@ async function buildSite() {
     };
 
     // the url the user sees
-    let url;
+    let url: string;
     // the FULL directory that stores all the HTML files. each article has its
     // own directory
-    let directory;
+    let directory: string;
 
+    const htmlBasename = path.basename(filename, ".md");
     if (attributes.url) {
       url = normalizeUrl(attributes.url);
       directory = path.join(publicDir, url);
@@ -127,8 +127,10 @@ async function buildSite() {
 
     await mkdirp(directory);
 
-    fs.writeFile(path.join(directory, "index.html"), rendered);
-    fs.writeFile(path.join(directory, "_.html"), renderedMarkdown);
+    await Promise.all([
+      fs.writeFile(path.join(directory, "index.html"), html),
+      fs.writeFile(path.join(directory, "_.html"), fragment),
+    ]);
 
     return {
       path: normalizeUrl(url),
@@ -136,44 +138,54 @@ async function buildSite() {
     };
   };
 
-  const buildAsJavascript = async (filename) => {
-    const file = await readFile(filename);
-    const basename = path.basename(filename);
-    const minified = await minifyJS(
-      { [basename]: file },
-      {
-        module: true,
-        sourceMap: {
-          includeSources: true,
-          url: basename + ".map",
-        },
-      }
-    );
-    await Promise.all([
-      fs.writeFile(path.join(publicDir, basename), minified.code),
-      fs.writeFile(path.join(publicDir, basename + ".map"), minified.map),
-    ]);
-  };
-
-  const renderedPages = [];
+  const renderedPages: ({ path: string, lastModified: string })[] = [];
 
   for (const filename of siteFiles) {
+    if (!filename.endsWith(".md")) {
+      continue;
+    }
     const fullpath = path.join(markdownDir, filename);
-    if (filename.endsWith(".md")) {
-      renderedPages.push(await buildAsMarkdown(fullpath));
-    } else if (filename.endsWith(".js")) {
-      await buildAsJavascript(fullpath);
+    const result = await buildAsMarkdown(fullpath)
+    if (result) {
+      renderedPages.push(result);
     }
   }
 
-  const sitemapFile = mustache.render(sitemapXml, { pages: renderedPages });
+  const sitemapFile = mustache.render(sitemapXmlTemplate, { pages: renderedPages });
   fs.writeFile(path.join(publicDir, "sitemap.xml"), sitemapFile);
+}
+
+async function buildJavascript() {
+  // console.log(await ts.readConfigFile("tsconfig.json", undefined));
+  // const inner = async (filename) => {
+  //   const file = await readFile(filename);
+  //   const basename = path.basename(filename);
+  //   const minified = await minifyJS(
+  //     { [basename]: file },
+  //     {
+  //       module: true,
+  //       sourceMap: {
+  //         includeSources: true,
+  //         url: basename + ".map",
+  //       },
+  //     }
+  //   );
+  //   await Promise.all([
+  //     fs.writeFile(path.join(publicDir, basename), minified.code),
+  //     fs.writeFile(path.join(publicDir, basename + ".map"), minified.map),
+  //   ]);
+  // };
+  // for (const entrypoint of await fs.readdir(javascriptEntrypoints)) {
+  //   if (entrypoint.match(".tsx?$")) {
+  //     inner(path.join(javascriptEntrypoints, entrypoint));
+  //   }
+  // }
 }
 
 async function build() {
   console.time("built site in");
   try {
-    await buildSite();
+    await Promise.all([buildLess(), buildSite(), buildJavascript()]);
   } catch (e) {
     console.error(e);
   } finally {

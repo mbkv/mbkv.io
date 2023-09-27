@@ -1,4 +1,6 @@
-"use strict";
+import { h } from "../dom";
+import { clamp, lerpColor } from "../utils";
+
 const css = `
 .wrapper {
   height: 100%;
@@ -29,66 +31,11 @@ form {
   margin-left: auto;
 }
 `;
-// TODO(mike): i don't want to keep copy/pasting this. figure out some way to actually be able to import files
-/**
- * lerp
- * @param {number} a
- * @param {number} b
- * @param {number} t
- */
-const lerp = (a, b, t) => {
-  return a + t * (b - a);
-};
-
-/**
- * @param {string} hex
- */
-const parseHexColor = (hex) => ({
-  r: parseInt(hex.substring(1, 3), 16),
-  g: parseInt(hex.substring(3, 5), 16),
-  b: parseInt(hex.substring(5, 7), 16),
-});
-
-/**
- * Lerp between two hex color values
- * @param {string} hex1
- * @param {string} hex2
- * @param {number} t
- */
-const lerpColor = (hex1, hex2, t) => {
-  const color1 = parseHexColor(hex1);
-  const color2 = parseHexColor(hex2);
-
-  const r = Math.floor(lerp(color1.r, color2.r, t))
-    .toString(16)
-    .padStart(2, "0");
-  const g = Math.floor(lerp(color1.g, color2.g, t))
-    .toString(16)
-    .padStart(2, "0");
-  const b = Math.floor(lerp(color1.b, color2.b, t))
-    .toString(16)
-    .padStart(2, "0");
-
-  return `#${r}${g}${b}`;
-};
-
-const lighten = (color, percentage) => {
-  return lerpColor(color, "#ffffff", percentage);
-};
-
-const darken = (color, percentage) => {
+const darken = (color: string, percentage: number) => {
   return lerpColor(color, "#000000", percentage);
 };
 
-const createElement = document.createElement.bind(document);
-const h = (tagName, properties = {}, ...children) => {
-  const element = createElement(tagName);
-  Object.assign(element, properties);
-  element.append(...children);
-  return element;
-};
 
-const clamp = (x, min, max) => Math.min(Math.max(x, min), max);
 
 const MIN_DB = -120;
 const MAX_DB = 0;
@@ -96,10 +43,34 @@ const MAX_DB = 0;
 let audioContext;
 
 class AudioVisualizer extends HTMLElement {
+  name: HTMLDivElement;
+
+  canvas: HTMLCanvasElement;
+
+  canvasContainer: HTMLDivElement;
+
+  ctx: CanvasRenderingContext2D | null;
+
+  audio: HTMLAudioElement
+
+  computedStyles = window.getComputedStyle(this);
+
+  resizeObserver: ResizeObserver | undefined;
+
+  analyser: AnalyserNode | undefined;
+
+  frequencyBin: Uint8Array | undefined
+
+  frequencies: number[] | undefined
+
   constructor() {
     super();
 
     this.attachShadow({ mode: "open" });
+    this.audio = h("audio", {
+      controls: true,
+      className: "audio",
+    });
     this.canvas = h("canvas", {
       className: "canvas",
       onclick: () => {
@@ -112,10 +83,6 @@ class AudioVisualizer extends HTMLElement {
     });
     this.canvasContainer = h("div", { className: "container" }, this.canvas);
     this.ctx = this.canvas.getContext("2d");
-    this.audio = h("audio", {
-      controls: true,
-      className: "audio",
-    });
     this.name = h("div");
     const wrapper = h(
       "div",
@@ -126,7 +93,7 @@ class AudioVisualizer extends HTMLElement {
       h(
         "form",
         {
-          onsubmit(e) {
+          onsubmit(e: SubmitEvent) {
             e.preventDefault();
           },
         },
@@ -146,7 +113,9 @@ class AudioVisualizer extends HTMLElement {
     const globalStyles = h("link", { rel: "stylesheet", href: "/styles.css" });
     const styles = h("style", { textContent: css });
 
-    this.shadowRoot.append(wrapper, globalStyles, styles);
+    this.computedStyles = window.getComputedStyle(this);
+
+    this.shadowRoot!.append(wrapper, globalStyles, styles);
   }
 
   connectedCallback() {
@@ -165,11 +134,11 @@ class AudioVisualizer extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.resizeObserver.disconnect();
+    this.resizeObserver!.disconnect();
   }
 
   onFileUpload({ currentTarget }) {
-    this.audio.innerHtml = "";
+    this.audio.innerHTML = "";
     if (currentTarget.files.length) {
       if (this.audio.src) {
         URL.revokeObjectURL(this.audio.src);
@@ -237,6 +206,7 @@ class AudioVisualizer extends HTMLElement {
       this.loop();
     }
   }
+  pageSizeVariables: any;
 
   setPageSizeDependentVariables() {
     if (!this.pageSizeVariables) {
@@ -286,7 +256,7 @@ class AudioVisualizer extends HTMLElement {
       return clamp(x, plot.left, plot.right);
     });
 
-    if (this.audioContextInitted) {
+    if (this.audioContextInitted && this.frequencies) {
       if (!vars.frequenciesToX) {
         vars.frequenciesToX = Array(this.frequencies.length);
       }
@@ -299,8 +269,8 @@ class AudioVisualizer extends HTMLElement {
       }
 
       const minBinPxs = 5;
-      const logarithmicBins = (vars.logarithmicBins = []);
-      let current = {
+      const logarithmicBins: any = (vars.logarithmicBins = []);
+      let current: any = {
         startI: frequenciesToX.findIndex((value) => value != null),
         width: minBinPxs,
       };
@@ -318,7 +288,11 @@ class AudioVisualizer extends HTMLElement {
         }
       }
     }
+
+    return
   }
+
+  loopId: ReturnType<typeof requestAnimationFrame> | undefined;
 
   loop() {
     if (this.loopId) {
@@ -336,13 +310,15 @@ class AudioVisualizer extends HTMLElement {
   }
 
   cancelLoop() {
-    cancelAnimationFrame(this.loopId);
+    if (this.loopId) {
+      cancelAnimationFrame(this.loopId);
+    }
     this.loopId = undefined;
   }
 
   render() {
     const ctx = this.ctx;
-    if (!this.ctx) {
+    if (!ctx) {
       return;
     }
 
@@ -371,6 +347,9 @@ class AudioVisualizer extends HTMLElement {
     };
 
     const drawSpectrum = () => {
+      if (!this.analyser || !this.frequencyBin) {
+        return;
+      }
       //Draw spectrum
       this.analyser.getByteFrequencyData(this.frequencyBin);
       for (let i = 0; i < logarithmicBins.length; i++) {
