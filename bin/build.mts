@@ -168,7 +168,6 @@ async function buildJavascript() {
     const bundle = await rollup.rollup(optionsObj);
     await Promise.all(optionsObj.output.map(bundle.write));
   }
-  rollup.watch(options)
 }
 
 async function watchJavascript() {
