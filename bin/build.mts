@@ -10,6 +10,8 @@ import path from "path";
 import fsSync from "fs";
 import fs from "fs/promises";
 import { mkdirp } from "mkdirp";
+import * as rollup from "rollup";
+import { loadConfigFile } from "rollup/loadConfigFile";
 
 const minifyHtml = (source: string) =>
   _minifyHtml(source, { collapseWhitespace: true, removeComments: true });
@@ -156,36 +158,43 @@ async function buildSite() {
 }
 
 async function buildJavascript() {
-  // console.log(await ts.readConfigFile("tsconfig.json", undefined));
-  // const inner = async (filename) => {
-  //   const file = await readFile(filename);
-  //   const basename = path.basename(filename);
-  //   const minified = await minifyJS(
-  //     { [basename]: file },
-  //     {
-  //       module: true,
-  //       sourceMap: {
-  //         includeSources: true,
-  //         url: basename + ".map",
-  //       },
-  //     }
-  //   );
-  //   await Promise.all([
-  //     fs.writeFile(path.join(publicDir, basename), minified.code),
-  //     fs.writeFile(path.join(publicDir, basename + ".map"), minified.map),
-  //   ]);
-  // };
-  // for (const entrypoint of await fs.readdir(javascriptEntrypoints)) {
-  //   if (entrypoint.match(".tsx?$")) {
-  //     inner(path.join(javascriptEntrypoints, entrypoint));
-  //   }
-  // }
+  const { options, warnings } = await loadConfigFile(path.resolve(rootDir, 'rollup.config.js'), {
+    format: 'es'
+  });
+
+  warnings.flush();
+
+  for (const optionsObj of options) {
+    const bundle = await rollup.rollup(optionsObj);
+    await Promise.all(optionsObj.output.map(bundle.write));
+  }
+  rollup.watch(options)
 }
 
-async function build() {
+async function watchJavascript() {
+  const { options, warnings } = await loadConfigFile(path.resolve(rootDir, 'rollup.config.js'), {
+    format: 'es'
+  });
+
+  warnings.flush();
+
+  const watcher = rollup.watch(options)
+  watcher.on('event', event => {
+    if (event.code === 'BUNDLE_END') {
+      console.log(`Built in: ${event.duration}ms (${event.input})`)
+    }
+  })
+
+}
+
+async function build(javascript: boolean) {
   console.time("built site in");
   try {
-    await Promise.all([buildLess(), buildSite(), buildJavascript()]);
+    const promises = [buildLess(), buildSite()];
+    if (javascript) {
+      promises.push(buildJavascript());
+    }
+    await Promise.all(promises);
   } catch (e) {
     console.error(e);
   } finally {
@@ -196,13 +205,14 @@ async function build() {
 const isWatch = process.argv.some((arg) => arg === "--watch");
 
 if (isWatch) {
+  watchJavascript();
   chokidar
     .watch(["./styles", "./markdown"], { ignoreInitial: true })
     .on("all", () => {
       console.log("running");
-      build();
+      build(false);
     });
-  build();
+  build(false);
 } else {
-  build();
+  build(true);
 }

@@ -23,7 +23,7 @@ async function main(): Promise<RollupOptions[]> {
       plugins: [terser()],
       sourcemap: true,
     },
-    plugins: [tsc({ "tsconfig": "./tsconfig.rollup.json" })],
+    plugins: [tsc({ "tsconfig": "./tsconfig.rollup.json", check: false })],
   }));
 }
 

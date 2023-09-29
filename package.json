@@ -1,7 +1,12 @@
 {
   "name": "mbkv.io",
   "type": "module",
-  "dependencies": {
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
+    "@types/less": "^3.0.4",
+    "@types/mustache": "^4.2.2",
+    "@types/node": "^20.6.2",
+    "chokidar": "^3.5.3",
     "front-matter": "^4.0.2",
     "highlight.js": "^11.8.0",
     "html-minifier-terser": "^7.2.0",
@@ -15,13 +20,6 @@
     "terser": "^5.19.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
-  },
-  "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.3",
-    "@types/less": "^3.0.4",
-    "@types/mustache": "^4.2.2",
-    "@types/node": "^20.6.2",
-    "chokidar": "^3.5.3"
   },
   "scripts": {
     "build": "ts-node-esm ./bin/build.mts",
