@@ -16,7 +16,8 @@ import { loadConfigFile } from "rollup/loadConfigFile";
 const minifyHtml = (source: string) =>
   _minifyHtml(source, { collapseWhitespace: true, removeComments: true });
 
-const readFile = (filename: string) => fs.readFile(filename, { encoding: "utf-8" });
+const readFile = (filename: string) =>
+  fs.readFile(filename, { encoding: "utf-8" });
 
 const rootDir = fsSync.realpathSync(
   path.join(path.dirname(process.argv[1]), "..")
@@ -58,12 +59,13 @@ renderer.paragraph = (text) => {
 marked.use({ renderer });
 
 async function buildSite() {
-  const [pageTemplate, postTemplate, sitemapXmlTemplate, siteFiles] = await Promise.all([
-    readFile(baseHtmlEntrypoint).then((base) => minifyHtml(base)),
-    readFile(markdownHtmlEntrypoint).then((base) => minifyHtml(base)),
-    readFile(sitemapXmlEntrypoint).then((base) => minifyHtml(base)),
-    fs.readdir(markdownDir),
-  ]);
+  const [pageTemplate, postTemplate, sitemapXmlTemplate, siteFiles] =
+    await Promise.all([
+      readFile(baseHtmlEntrypoint).then((base) => minifyHtml(base)),
+      readFile(markdownHtmlEntrypoint).then((base) => minifyHtml(base)),
+      readFile(sitemapXmlEntrypoint).then((base) => minifyHtml(base)),
+      fs.readdir(markdownDir),
+    ]);
 
   const buildAsMarkdown = async (filename: string) => {
     const { attributes, fragment, html } = await (async () => {
@@ -140,27 +142,32 @@ async function buildSite() {
     };
   };
 
-  const renderedPages: ({ path: string, lastModified: string })[] = [];
+  const renderedPages: { path: string; lastModified: string }[] = [];
 
   for (const filename of siteFiles) {
     if (!filename.endsWith(".md")) {
       continue;
     }
     const fullpath = path.join(markdownDir, filename);
-    const result = await buildAsMarkdown(fullpath)
+    const result = await buildAsMarkdown(fullpath);
     if (result) {
       renderedPages.push(result);
     }
   }
 
-  const sitemapFile = mustache.render(sitemapXmlTemplate, { pages: renderedPages });
+  const sitemapFile = mustache.render(sitemapXmlTemplate, {
+    pages: renderedPages,
+  });
   fs.writeFile(path.join(publicDir, "sitemap.xml"), sitemapFile);
 }
 
 async function buildJavascript() {
-  const { options, warnings } = await loadConfigFile(path.resolve(rootDir, 'rollup.config.js'), {
-    format: 'es'
-  });
+  const { options, warnings } = await loadConfigFile(
+    path.resolve(rootDir, "rollup.config.js"),
+    {
+      format: "es",
+    }
+  );
 
   warnings.flush();
 
@@ -171,28 +178,28 @@ async function buildJavascript() {
 }
 
 async function watchJavascript() {
-  const { options, warnings } = await loadConfigFile(path.resolve(rootDir, 'rollup.config.js'), {
-    format: 'es'
-  });
+  const { options, warnings } = await loadConfigFile(
+    path.resolve(rootDir, "rollup.config.js"),
+    {
+      format: "es",
+    }
+  );
 
   warnings.flush();
 
-  const watcher = rollup.watch(options)
-  watcher.on('event', event => {
-    if (event.code === 'BUNDLE_END') {
-      console.log(`Built in: ${event.duration}ms (${event.input})`)
+  const watcher = rollup.watch(options);
+  watcher.on("event", (event) => {
+    warnings.flush();
+    if (event.code === "BUNDLE_END") {
+      console.log(`Built in: ${event.duration}ms (${event.input})`);
     }
-  })
-
+  });
 }
 
-async function build(javascript: boolean) {
+async function build() {
   console.time("built site in");
   try {
     const promises = [buildLess(), buildSite()];
-    if (javascript) {
-      promises.push(buildJavascript());
-    }
     await Promise.all(promises);
   } catch (e) {
     console.error(e);
@@ -209,9 +216,10 @@ if (isWatch) {
     .watch(["./styles", "./markdown"], { ignoreInitial: true })
     .on("all", () => {
       console.log("running");
-      build(false);
+      build();
     });
-  build(false);
+  build();
 } else {
-  build(true);
+  buildJavascript();
+  build();
 }

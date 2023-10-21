@@ -19,4 +19,8 @@ export const lerpColor = (hex1: string, hex2: string, t: number) => {
   return `#${r}${g}${b}`;
 };
 
+export const darken = (color: string, percentage: number) => {
+  return lerpColor(color, "#000000", percentage);
+};
+
 export const clamp = (x: number, min: number, max: number) => Math.min(Math.max(x, min), max);

@@ -22,7 +22,10 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "build": "ts-node-esm ./bin/build.mts",
-    "watch": "ts-node-esm ./bin/build.mts --watch"
+    "build": "ts-node-esm ./bin/build.ts",
+    "watch": "ts-node-esm ./bin/build.ts --watch"
+  },
+  "dependencies": {
+    "@rollup/plugin-typescript": "^11.1.4"
   }
 }

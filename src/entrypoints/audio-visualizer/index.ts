@@ -1,5 +1,7 @@
-import { h } from "../dom";
-import { clamp, lerpColor } from "../utils";
+import { h } from "../../dom";
+import { clamp, darken } from "../../utils";
+import visualizeVertex from "./ui.vs";
+import visualizeFragment from "./ui.fs";
 
 const css = `
 .wrapper {
@@ -31,14 +33,11 @@ form {
   margin-left: auto;
 }
 `;
-const darken = (color: string, percentage: number) => {
-  return lerpColor(color, "#000000", percentage);
-};
-
-
 
 const MIN_DB = -120;
 const MAX_DB = 0;
+const MIN_FREQ = 20;
+const MAX_FREQ = 20_000;
 
 let audioContext;
 
@@ -51,7 +50,7 @@ class AudioVisualizer extends HTMLElement {
 
   ctx: CanvasRenderingContext2D | null;
 
-  audio: HTMLAudioElement
+  audio: HTMLAudioElement;
 
   computedStyles = window.getComputedStyle(this);
 
@@ -59,9 +58,9 @@ class AudioVisualizer extends HTMLElement {
 
   analyser: AnalyserNode | undefined;
 
-  frequencyBin: Uint8Array | undefined
+  frequencyBin: Uint8Array | undefined;
 
-  frequencies: number[] | undefined
+  frequencies: number[] | undefined;
 
   constructor() {
     super();
@@ -289,7 +288,7 @@ class AudioVisualizer extends HTMLElement {
       }
     }
 
-    return
+    return;
   }
 
   loopId: ReturnType<typeof requestAnimationFrame> | undefined;
@@ -337,7 +336,7 @@ class AudioVisualizer extends HTMLElement {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // helper
-    const drawLine = (x1, y1, x2, y2) => {
+    const drawLine = (x1: number, y1: number, x2: number, y2: number) => {
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(x1, y1);

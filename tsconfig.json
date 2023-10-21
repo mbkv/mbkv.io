@@ -7,9 +7,8 @@
     "esModuleInterop": false,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": false,
-    "incremental": true,
     "lib": ["DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "es2022",
     "moduleResolution":"Bundler",
     "noEmitHelpers": true,
     "noImplicitAny": false,
@@ -24,8 +23,11 @@
     "strictPropertyInitialization": true,
     "target": "ESNext",
   },
-  "include": [
-    "./bin",
-    "./rollup.config.ts",
-  ],
+  // "include": [
+  //   "./rollup.config.ts"
+  // ]
+  // "include": [
+  //   "./bin",
+  //   "rollup.config.ts",
+  // ],
 }
