@@ -49,6 +49,13 @@ function pageIsDarkMode() {
         b: lerp(rgba.a, parentColor.b, rgba.b),
         a: 1,
       };
+    } else if (rgba.a === 0) {
+      thisColor = {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 1,
+      };
     } else {
       thisColor = rgba;
     }
@@ -144,4 +151,3 @@ function getRgbaFromSerialized(formatted) {
     );
   }
 })();
-
