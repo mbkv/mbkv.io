@@ -18,10 +18,11 @@ const className = "t_" + id() + id();
   const style = document.createElement("style");
   style.innerText = `.${className} {
   filter: invert(1) hue-rotate(180deg);
-  background: white;
+  background-color: white;
 
   img, video, iframe {
     filter: invert(1) hue-rotate(180deg);
+    background-color: white;
   }
 }`;
   document.head.append(style);
