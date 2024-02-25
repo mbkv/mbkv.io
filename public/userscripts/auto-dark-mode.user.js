@@ -16,11 +16,11 @@ const className = "t_" + id() + id();
 
 (function addClassName() {
   const style = document.createElement("style");
-  style.innerText = `.${className} {
+  style.textContent = `:where(.${className}) {
   filter: invert(1) hue-rotate(180deg);
   background-color: white;
 
-  img, video, iframe {
+  :where(img, video, iframe) {
     filter: invert(1) hue-rotate(180deg);
     background-color: white;
   }
@@ -93,7 +93,7 @@ function pageIsDarkMode() {
     }
     return colors;
   }
-  const textColors = countDarkText(document.body);
+  const textColors = countDarkText(document.documentElement);
   return textColors.dark > textColors.light;
 }
 function isColorDark(rgb) {
