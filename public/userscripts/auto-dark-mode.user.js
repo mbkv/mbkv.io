@@ -63,8 +63,8 @@ function pageIsDarkMode() {
     const thisIsDark = isColorDark(thisColor);
     const numberOfCharacters = [...element.childNodes].reduce((a, b) => {
       if (b instanceof Text) {
-        const text = b.textContent?.replace(/\s+/g, "") || "";
-        return a + text.length;
+        const text = b.textContent || "";
+        return a + text.replace(/\s+/g, "").length;
       }
       return a;
     }, 0);
