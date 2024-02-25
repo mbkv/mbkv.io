@@ -12,9 +12,11 @@
 
 node_modules
 
-public
+.rollup.cache
+*.tsbuildinfo
+
+public/*
+!public/userscripts
 !public/litter.png
 !public/robots.txt
 
-.rollup.cache
-*.tsbuildinfo
