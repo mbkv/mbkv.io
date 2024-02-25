@@ -3,7 +3,7 @@
 // @author      Michael Bitokhov
 // @description Detect when a site does not have a dark theme, and give it one.
 // @namespace   https://mbkv.io
-// @version     1.0
+// @version     1.0.1
 // @license     MIT
 // @grant       none
 // @sandbox     dom
