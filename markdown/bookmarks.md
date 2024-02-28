@@ -50,6 +50,7 @@ same button but in a slightly different way. While that discussion has its time
 and place, the thing I'm more interested in is how to get that button to render
 as fast as possible. Below are a few resources for that
 
+- [Web Performance Optimization stats](https://wpostats.com/)
 - [@intenttoship](https://twitter.com/intenttoship)
 - [ECMAScript proposals](https://github.com/tc39/proposals)
 - [Figma's "BUilding a professional design tool on the web](https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/)
