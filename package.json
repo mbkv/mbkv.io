@@ -22,7 +22,7 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "build": "ts-node-esm ./bin/build.mts",
-    "watch": "ts-node-esm ./bin/build.mts --watch"
+    "build": "node --loader ts-node/esm --no-warnings bin/build.ts",
+    "watch": "node --loader ts-node/esm --no-warnings bin/build.ts --watch"
   }
 }
