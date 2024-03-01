@@ -57,6 +57,7 @@ as fast as possible. Below are a few resources for that
 
   honestly [the entire figma blog](https://www.figma.com/blog/engineering/) is amazing.
 
+- [tonsky.me](https://tonsky.me)
 - [Frontend web performance: The Essentials](https://medium.com/@matthew.costello/frontend-web-performance-the-essentials-0-61fea500b180)
 - [Optimizing for 60fps everywhere in JavaScript](https://www.gosquared.com/blog/optimising-60fps-everywhere-in-javascript)
 
