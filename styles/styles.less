@@ -1,6 +1,7 @@
 @import "variables.less";
 @import "hljs.less";
 @import "markdown.less";
+@import "fonts.less";
 
 * {
   box-sizing: border-box;
@@ -30,10 +31,6 @@ body {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
-}
-
-code {
-  font-family: monospace;
 }
 
 a {
@@ -104,9 +101,16 @@ nav {
 
 main {
   padding: min(2%, 1em) min(5%, 2em);
-  margin: 0 auto;
   min-width: min(88ch, 100%);
   max-width: min(88ch, 100%);
+}
+
+// mobile
+
+@media screen and (max-width: @desktop - 1) {
+  main {
+    margin: 0 auto;
+  }
 }
 
 // desktop
