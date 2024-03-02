@@ -11,56 +11,56 @@
 LOCKFILE1="/var/www/mbkv.io/build-mbkv.1.lock"
 LOCKFILE2="/var/www/mbkv.io/build-mbkv.2.lock"
 
+exec {LOCK1_FD}>"$LOCKFILE1"
+exec {LOCK2_FD}>"$LOCKFILE2"
+
+while getopts ":f" opt; do
+    case $opt in
+    f)
+        force=true
+        ;;
+    esac
+done
+
+lock_file_block() {
+    flock -x "$1"
+}
+
 lock_file() {
-    echo "$BASHPID" >"$1"
-    sleep .5
-    if [ "$(cat $1)" != $BASHPID ]; then
-        echo "Race condition!"
-        exit
-    fi
+    flock -n -x "$1"
+    return $?
 }
 
 unlock_file() {
-    rm "$1"
-}
-
-is_lock_active() {
-    if [ -f "$1" ]; then
-        if ps -p "$(cat "$1")" >/dev/null; then
-            return 0
-        fi
-    fi
-    return 1
+    flock -u "$1"
 }
 
 build() {
-    if is_lock_active "$LOCKFILE1"  && is_lock_active "$LOCKFILE2"; then
-        exit 1
-    fi
-
-    if is_lock_active "$LOCKFILE1"; then
-        lock_file "$LOCKFILE2"
-        while is_lock_active "$LOCKFILE1"; do
-            sleep 1
-        done
-        lock_file "$LOCKFILE1"
-        unlock_file "$LOCKFILE2"
-    else
-        lock_file "$LOCKFILE1"
+    lock_file "$LOCK1_FD"
+    if [ $? -ne 0 ]; then
+        lock_file "$LOCK2_FD" || exit 1
+        lock_file_block "$LOCK1_FD"
+        unlock_file "$LOCK2_FD"
     fi
 
     echo "Building on $(date)"
-    nvm install v20.11.1
+    nvm install --lts
     pushd /var/www/mbkv.io/repo
-    git fetch --all -q
+    git remote update
+
+    head_commit="$(git rev-parse HEAD)"
+    origin_commit="$(git rev-parse origin/master)"
+    if [ "$head_commit" == "$origin_commit" ] && [ -z "$force" ]; then
+        echo "Not doing anything since the commit is the same"
+        sleep 5
+        exit 1
+    fi
+
     git reset --hard origin/master
     git clean -dXf public/
     yarn
     yarn build
     rsync --delete -av public/ /var/www/mbkv.io/public/
-    popd
-
-    unlock_file "$LOCKFILE1"
 }
-build >> /var/www/mbkv.io/log 2>&1 &
 
+build >>/var/www/mbkv.io/log 2>&1 &
