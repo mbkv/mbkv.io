@@ -5,8 +5,9 @@
 @light-theme-brightness: 98%;
 
 // Monochrome -----------------------------------
+@light-theme-mono-0: hsl(@light-theme-hue, 8%, 15%);
 @light-theme-mono-1: hsl(@light-theme-hue, 8%, 24%);
-@light-theme-mono-2: hsl(@light-theme-hue, 6%, 44%);
+@light-theme-mono-2: hsl(@light-theme-hue, 6%, 40%);
 @light-theme-mono-3: hsl(@light-theme-hue, 4%, 64%);
 
 // Colors -----------------------------------
@@ -38,6 +39,7 @@
 @dark-theme-brightness: 18%;
 
 // Monochrome -----------------------------------
+@dark-theme-mono-0: hsl(@dark-theme-hue, 14%, 85%); // code text
 @dark-theme-mono-1: hsl(@dark-theme-hue, 14%, 71%); // default text
 @dark-theme-mono-2: hsl(@dark-theme-hue, 9%, 55%);
 @dark-theme-mono-3: hsl(@dark-theme-hue, 10%, 40%);
@@ -88,7 +90,9 @@
 
   --theme-text: @light-theme-fg;
   --theme-background: @light-theme-bg;
-  --theme-text-quote: @light-theme-mono-3;
+  --theme-code: @light-theme-mono-0;
+  --theme-code-background: #00000005;
+  --theme-text-quote: @light-theme-mono-2;
   --theme-keyword: @light-theme-purple;
   --theme-name: @light-theme-red;
   --theme-literal: @light-theme-cyan;
@@ -124,7 +128,9 @@
 
     --theme-text: @dark-theme-fg;
     --theme-background: @dark-theme-bg;
-    --theme-text-quote: @dark-theme-mono-3;
+    --theme-code: @dark-theme-mono-0;
+    --theme-code-background: #00000040;
+    --theme-text-quote: @dark-theme-mono-2;
     --theme-keyword: @dark-theme-purple;
     --theme-name: @dark-theme-red;
     --theme-literal: @dark-theme-cyan;

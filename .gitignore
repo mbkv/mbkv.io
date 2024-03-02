@@ -16,7 +16,7 @@ node_modules
 *.tsbuildinfo
 
 public/*
+!public/fonts
 !public/userscripts
 !public/litter.png
 !public/robots.txt
-
