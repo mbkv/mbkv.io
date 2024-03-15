@@ -29,13 +29,15 @@ const sitemapXmlEntrypoint = path.join(markdownDir, "sitemap.xml");
 const styleEntrypoint = path.join(rootDir, "styles", "styles.less");
 
 async function buildLess() {
+  console.time("built less in:");
   const file = await readFile(styleEntrypoint);
   const built = await less.render(file, {
     filename: path.basename(styleEntrypoint),
     paths: [path.dirname(styleEntrypoint)],
     compress: true,
   });
-  return fs.writeFile(path.join(publicDir, "styles.css"), built.css);
+  await fs.writeFile(path.join(publicDir, "styles.css"), built.css);
+  console.timeEnd("built less in:");
 }
 
 const marked = new Marked(
@@ -58,6 +60,7 @@ renderer.paragraph = (text) => {
 marked.use({ renderer });
 
 async function buildSite() {
+  console.time("built md in:");
   const [pageTemplate, postTemplate, sitemapXmlTemplate, siteFiles] = await Promise.all([
     readFile(baseHtmlEntrypoint).then((base) => minifyHtml(base)),
     readFile(markdownHtmlEntrypoint).then((base) => minifyHtml(base)),
@@ -154,10 +157,12 @@ async function buildSite() {
   }
 
   const sitemapFile = mustache.render(sitemapXmlTemplate, { pages: renderedPages });
-  fs.writeFile(path.join(publicDir, "sitemap.xml"), sitemapFile);
+  await fs.writeFile(path.join(publicDir, "sitemap.xml"), sitemapFile);
+  console.timeEnd("built md in:");
 }
 
 async function buildJavascript() {
+  console.time("built js in:");
   const { options, warnings } = await loadConfigFile(path.resolve(rootDir, 'rollup.config.js'), {
     format: 'es'
   });
@@ -168,6 +173,7 @@ async function buildJavascript() {
     const bundle = await rollup.rollup(optionsObj);
     await Promise.all(optionsObj.output.map(bundle.write));
   }
+  console.timeEnd("built js in:");
 }
 
 async function watchJavascript() {
@@ -215,3 +221,4 @@ if (isWatch) {
 } else {
   build(true);
 }
+
