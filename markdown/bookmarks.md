@@ -9,22 +9,21 @@ updated: "2024-02-27"
 
 As an outsider, game development has always been fascinating to me. However,
 I've found that many of the practices and algorithms used in this field can be
-fairly opaque and hard to find. Some algorithms are fairly straight forward like
-axis aligned bounding box collisions. I've even done several implementations of
-that at my time at Kapwing. But I've had very little success finding anything
-that's even slightly more advanced than that. Just understanding at what a
-render layer is supposed to look like is difficult
+fairly opaque and hard to find. Some algorithms are fairly straight forward
+like axis aligned bounding box collisions. I've even done several
+implementations of that at my time at Kapwing. But I've had very little success
+finding anything that's even slightly more advanced than that. Just
+understanding at what a render layer is supposed to look like is difficult
 
 ### GPU optimization
-
-- [Render Graphs](https://logins.github.io/graphics/2021/05/31/RenderGraphs.html)
-- [meshoptimizer](https://github.com/zeux/meshoptimizer)
-
-  contains a huge amount of information about optimization algorithms!
 
 - [Life of a triangle - NVIDIA's logical pipeline](https://developer.nvidia.com/content/life-triangle-nvidias-logical-pipeline)
 - [Minimum number of triangles per draw call](https://www.g-truc.net/post-0666.html)
 - [How bad are small triangles on GPU and why?](https://www.g-truc.net/post-0662.html)
+- [Render Graphs](https://logins.github.io/graphics/2021/05/31/RenderGraphs.html)
+- [meshoptimizer](https://github.com/zeux/meshoptimizer)
+
+  contains a huge amount of information about optimization algorithms!
 
 ### CPU optimization
 
@@ -60,6 +59,10 @@ as fast as possible. Below are a few resources for that
 - [tonsky.me](https://tonsky.me)
 - [Frontend web performance: The Essentials](https://medium.com/@matthew.costello/frontend-web-performance-the-essentials-0-61fea500b180)
 - [Optimizing for 60fps everywhere in JavaScript](https://www.gosquared.com/blog/optimising-60fps-everywhere-in-javascript)
+- [How web bloat impacts users with slow devices](https://danluu.com/slow-devices/)
+
+  There's more articles linked in the appendix but you'll have to actually
+  visit the page to find them :)
 
 ## Uncategorized
 
