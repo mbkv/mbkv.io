@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/bash
 
 # this is probably overengineered garbage but because I felt like it and never
 # wanted to figure out why my site was out of date, this does some weird stuff
@@ -44,7 +44,6 @@ build() {
     fi
 
     echo "Building on $(date)"
-    nvm install --lts
     pushd /var/www/mbkv.io/repo
     git remote update
 
@@ -58,8 +57,8 @@ build() {
 
     git reset --hard origin/master
     git clean -dXf public/
-    yarn
-    yarn build
+    bun install
+    bun run bin/build.ts
     rsync --delete -av public/ /var/www/mbkv.io/public/
 }
 
