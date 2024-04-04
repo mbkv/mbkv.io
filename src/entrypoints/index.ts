@@ -25,7 +25,7 @@ const setRoute = async (url: string) => {
 
     const newRouterText = getElementById("router-props")!.innerText;
     if (!newRouterText) {
-      throw new Error("Page didn't have props!")
+      throw new Error("Page didn't have props!");
     }
     const newRouterProps = JSON.parse(newRouterText);
 

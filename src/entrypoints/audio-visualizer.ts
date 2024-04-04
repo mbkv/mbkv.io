@@ -35,8 +35,6 @@ const darken = (color: string, percentage: number) => {
   return lerpColor(color, "#000000", percentage);
 };
 
-
-
 const MIN_DB = -120;
 const MAX_DB = 0;
 
@@ -51,7 +49,7 @@ class AudioVisualizer extends HTMLElement {
 
   ctx: CanvasRenderingContext2D | null;
 
-  audio: HTMLAudioElement
+  audio: HTMLAudioElement;
 
   computedStyles = window.getComputedStyle(this);
 
@@ -59,9 +57,9 @@ class AudioVisualizer extends HTMLElement {
 
   analyser: AnalyserNode | undefined;
 
-  frequencyBin: Uint8Array | undefined
+  frequencyBin: Uint8Array | undefined;
 
-  frequencies: number[] | undefined
+  frequencies: number[] | undefined;
 
   constructor() {
     super();
@@ -107,8 +105,8 @@ class AudioVisualizer extends HTMLElement {
           className: "sample",
           textContent: "Try a sample!",
           onclick: this.sample.bind(this),
-        })
-      )
+        }),
+      ),
     );
     const globalStyles = h("link", { rel: "stylesheet", href: "/styles.css" });
     const styles = h("style", { textContent: css });
@@ -158,7 +156,7 @@ class AudioVisualizer extends HTMLElement {
         className: "sponsor",
         href: "https://open.spotify.com/artist/1DHRvWhGHEeX0aJhlZ8pDg?si=pYuVGdnzQb-EVzqzVOOhQQ",
         textContent: "Follow him on Spotify!",
-      })
+      }),
     );
     if (this.audio.src) {
       URL.revokeObjectURL(this.audio.src);
@@ -166,7 +164,7 @@ class AudioVisualizer extends HTMLElement {
     }
     this.audio.append(
       h("source", { type: "audio/ogg", src: "/odyssey - tatermaou.opus" }),
-      h("source", { type: "audio/mp3", src: "/odyssey - tatermaou.mp3" })
+      h("source", { type: "audio/mp3", src: "/odyssey - tatermaou.mp3" }),
     );
     this.audio.play();
     this.setupRenderLoop();
@@ -192,8 +190,7 @@ class AudioVisualizer extends HTMLElement {
       this.analyser.connect(audioContext.destination);
 
       this.frequencyBin = new Uint8Array(this.analyser.frequencyBinCount);
-      const frequencyPerBin =
-        audioContext.sampleRate / 2 / this.analyser.frequencyBinCount;
+      const frequencyPerBin = audioContext.sampleRate / 2 / this.analyser.frequencyBinCount;
       this.frequencies = Array(this.frequencyBin.length);
       for (let i = 0; i < this.frequencies.length; i++) {
         this.frequencies[i] = i + 1 * frequencyPerBin;
@@ -250,9 +247,7 @@ class AudioVisualizer extends HTMLElement {
         return;
       }
 
-      const x =
-        ((Math.log10(freq) - plot.startX) / plot.diffX) * plot.width +
-        plot.left;
+      const x = ((Math.log10(freq) - plot.startX) / plot.diffX) * plot.width + plot.left;
       return clamp(x, plot.left, plot.right);
     });
 
@@ -289,7 +284,7 @@ class AudioVisualizer extends HTMLElement {
       }
     }
 
-    return
+    return;
   }
 
   loopId: ReturnType<typeof requestAnimationFrame> | undefined;
@@ -325,14 +320,8 @@ class AudioVisualizer extends HTMLElement {
     const themeText = this.computedStyles.getPropertyValue("--theme-text");
     const themeRed = this.computedStyles.getPropertyValue("--theme-red");
 
-    const {
-      getXFromFrequency,
-      plot,
-      drawText,
-      drawMediumMarks,
-      drawMediumText,
-      logarithmicBins,
-    } = this.pageSizeVariables;
+    const { getXFromFrequency, plot, drawText, drawMediumMarks, drawMediumText, logarithmicBins } =
+      this.pageSizeVariables;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -354,20 +343,13 @@ class AudioVisualizer extends HTMLElement {
       this.analyser.getByteFrequencyData(this.frequencyBin);
       for (let i = 0; i < logarithmicBins.length; i++) {
         const bin = logarithmicBins[i];
-        const value = Math.max(
-          ...this.frequencyBin.slice(bin.startI, bin.endI + 1)
-        );
+        const value = Math.max(...this.frequencyBin.slice(bin.startI, bin.endI + 1));
 
         const ratio = value / 255;
         const barHeight = ratio * plot.height;
         ctx.fillStyle = themeRed;
         ctx.fillStyle = darken(ctx.fillStyle, (ratio - 0.5) * -0.5);
-        ctx.fillRect(
-          bin.startPx,
-          plot.height - barHeight + plot.top,
-          5,
-          barHeight
-        );
+        ctx.fillRect(bin.startPx, plot.height - barHeight + plot.top, 5, barHeight);
       }
     };
     const drawVerticalLines = () => {

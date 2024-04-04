@@ -12,7 +12,7 @@ class CustomCanvasElement extends HTMLCanvasElement {
 
   time = 0;
 
-  ctx = this.getContext("2d")
+  ctx = this.getContext("2d");
 
   computedStyle = window.getComputedStyle(this);
 
@@ -41,8 +41,7 @@ class CustomCanvasElement extends HTMLCanvasElement {
   resizeHandler() {
     if (this.parentElement) {
       this.width = this.parentElement.clientWidth;
-      this.height =
-        Number(this.getAttribute("ratio")) * this.parentElement.clientWidth;
+      this.height = Number(this.getAttribute("ratio")) * this.parentElement.clientWidth;
     }
   }
 
@@ -51,7 +50,7 @@ class CustomCanvasElement extends HTMLCanvasElement {
       this.time = performance.now() / 1000;
       this.draw();
       this.rafLoop();
-    })
+    });
   }
 
   draw() {

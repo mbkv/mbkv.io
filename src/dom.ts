@@ -1,7 +1,5 @@
-export const $: Document["querySelectorAll"] = (query: string) =>
-  document.querySelectorAll(query);
-export const getElementById: Document["getElementById"] = (id) =>
-  document.getElementById(id);
+export const $: Document["querySelectorAll"] = (query: string) => document.querySelectorAll(query);
+export const getElementById: Document["getElementById"] = (id) => document.getElementById(id);
 export const getElementsByTagName: Document["getElementsByTagName"] = (name: string) =>
   document.getElementsByTagName(name);
 
