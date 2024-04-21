@@ -56,6 +56,7 @@ as fast as possible. Below are a few resources for that
 
   honestly [the entire figma blog](https://www.figma.com/blog/engineering/) is amazing.
 
+- [Fast string concatenation in JavaScript](https://docs.google.com/document/u/0/d/1o-MJPAddpfBfDZCkIHNKbMiM86iDFld7idGbNQLuKIQ)
 - [tonsky.me](https://tonsky.me)
 - [Frontend web performance: The Essentials](https://medium.com/@matthew.costello/frontend-web-performance-the-essentials-0-61fea500b180)
 - [Optimizing for 60fps everywhere in JavaScript](https://www.gosquared.com/blog/optimising-60fps-everywhere-in-javascript)
