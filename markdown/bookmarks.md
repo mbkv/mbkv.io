@@ -33,6 +33,9 @@ understanding at what a render layer is supposed to look like is difficult
   Kind of sensational titles but it really just looks at it from a hardware
   perspective and probably gives the best short introduction to hardware that I know of
 
+### Techniques
+- [Handles are the better pointers](https://floooh.github.io/2018/06/17/handles-vs-pointers.html)
+
 ### Engines
 
 - [tokyospliff's](https://www.youtube.com/@tokyospliff/streams) engine [Hell2024](https://www.youtube.com/@tokyospliff/streams)
