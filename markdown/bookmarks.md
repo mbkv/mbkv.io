@@ -43,7 +43,7 @@ Game development has always been fascinating to me. But, I've found that many of
 
 ## Browsers
 
-I have been in web apps for my entire engineering career. Most of the things I need to research as of late is obscure. to gamedev, it also can't be found but for a completely different reason. The majority of web development content on the internet is flat out boring.  It's usually about how you can write the same button but in a different way. That discussion does have its place from time to time, but meaningless. The thing I'm more interested in is how to get that button to render as fast as possible. Below are a few resources for that
+I have been in web apps for my entire engineering career. Most of the things I need to research as of late is obscure. Similarly to gamedev, it also can't be found but for a completely different reason. The majority of web development content on the internet is flat out boring.  It's usually about how you can write the same button but in a different way. That discussion does have its place from time to time, but meaningless. The thing I'm more interested in is how to get that button to render as fast as possible. Below are a few resources for that
 
 - [Web Performance Optimization stats](https://wpostats.com/)
 - [@intenttoship](https://twitter.com/intenttoship)
