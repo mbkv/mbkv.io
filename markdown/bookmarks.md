@@ -70,6 +70,10 @@ I have been in web apps for my entire engineering career. Most of the things I n
 
   Indie dev/graphics related content
 
+- [Hidden grove](https://www.rfleury.com/)
+
+  Literally so much stuff about programming
+
 ## Uncategorized
 
 Making this section because I don't even know if these are even good resources or what they really are.
