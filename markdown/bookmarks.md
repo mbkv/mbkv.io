@@ -40,6 +40,9 @@ Game development has always been fascinating to me. But, I've found that many of
 
 - [Lighting Artist | Games | Master Resource List](https://docs.google.com/spreadsheets/d/1eBzBT83TcVQLUTjytOzJvKI7LZ00OdAriTeZjYYUP-E/edit#gid=0)
 
+### Opinion pieces
+
+- [Hotspot performance engineering fails](https://lemire.me/blog/2023/04/27/hotspot-performance-engineering-fails/)
 
 ## Browsers
 
