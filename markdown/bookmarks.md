@@ -63,10 +63,11 @@ I have been in web apps for my entire engineering career. Most of the things I n
 - [Frontend web performance: The Essentials](https://medium.com/@matthew.costello/frontend-web-performance-the-essentials-0-61fea500b180)
 - [Optimizing for 60fps everywhere in JavaScript](https://www.gosquared.com/blog/optimising-60fps-everywhere-in-javascript)
 - [How web bloat impacts users with slow devices](https://danluu.com/slow-devices/)
-- [Rendering fallback fonts correctly](https://chromium.googlesource.com/chromium/src/+/main/third_party/blink/renderer/platform/fonts/LocaleInFonts.md#unified-han-ideographs)
 
   There's more articles linked in the appendix but you'll have to actually
   visit the page to find them :)
+
+- [Rendering fallback fonts correctly](https://chromium.googlesource.com/chromium/src/+/main/third_party/blink/renderer/platform/fonts/LocaleInFonts.md#unified-han-ideographs)
 
 ## Blogs
 
