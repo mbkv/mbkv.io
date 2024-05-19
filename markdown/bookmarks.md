@@ -16,6 +16,7 @@ Game development has always been fascinating to me. But, I've found that many of
 - [How bad are small triangles on GPU and why?](https://www.g-truc.net/post-0662.html)
 - [Render Graphs](https://logins.github.io/graphics/2021/05/31/RenderGraphs.html)
 - [meshoptimizer](https://github.com/zeux/meshoptimizer)
+- [Ubershaders and pipeline pre-compilation](https://github.com/godotengine/godot/pull/90400)
 
   contains a huge amount of information about optimization algorithms!
 
