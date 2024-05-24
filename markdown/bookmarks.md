@@ -71,6 +71,7 @@ I have been in web apps for my entire engineering career. Most of the things I n
   visit the page to find them :)
 
 - [Rendering fallback fonts correctly](https://chromium.googlesource.com/chromium/src/+/main/third_party/blink/renderer/platform/fonts/LocaleInFonts.md#unified-han-ideographs)
+- [LET'S MAKE A NETFLIX](https://nickdesaulniers.github.io/netfix/#/)
 
 ## Blogs
 
