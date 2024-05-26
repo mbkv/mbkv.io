@@ -9,8 +9,9 @@ updated: "2024-04-29"
 
 Game development has always been fascinating to me. But, I've found that many of the practices and algorithms used in this field can be opaque and hard to find. Some algorithms are straight forward like axis aligned bounding box collisions. I've even done several implementations of that at my time at Kapwing. But setting up a render graph for the first time is daunting. This is by no means a complete list of things you need to learn in game development. Just stuff I remembered I needed to put on the list
 
-### GPU optimization
+### GPU
 
+- [Getting Started In Computer Graphics](https://www.jeremyong.com/graphics/2024/05/19/getting-started-in-computer-graphics/)
 - [Life of a triangle - NVIDIA's logical pipeline](https://developer.nvidia.com/content/life-triangle-nvidias-logical-pipeline)
 - [Minimum number of triangles per draw call](https://www.g-truc.net/post-0666.html)
 - [How bad are small triangles on GPU and why?](https://www.g-truc.net/post-0662.html)
@@ -22,7 +23,7 @@ Game development has always been fascinating to me. But, I've found that many of
 - [Ubershaders and pipeline pre-compilation](https://github.com/godotengine/godot/pull/90400)
 
 
-### CPU optimization
+### CPU
 
 - [Pitfalls of Object Oriented Programming](https://harmful.cat-v.org/software/OO_programming/_pdf/Pitfalls_of_Object_Oriented_Programming_GCAP_09.pdf)
 - [Pitfalls of Object Oriented Programming, Revisited](https://www.youtube.com/watch?v=VAT9E-M-PoE)
