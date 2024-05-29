@@ -73,6 +73,7 @@ I have been in web apps for my entire engineering career. Most of the things I n
 
 - [Rendering fallback fonts correctly](https://chromium.googlesource.com/chromium/src/+/main/third_party/blink/renderer/platform/fonts/LocaleInFonts.md#unified-han-ideographs)
 - [LET'S MAKE A NETFLIX](https://nickdesaulniers.github.io/netfix/#/)
+- [How Video Works: A Dive into the Biggest Thing on the Internet & Why You Should Care -Jon Dahl (Mux)](https://www.youtube.com/watch?v=rb83esfHnW8)
 - [How Disney+ Hotstar increased weekly card views by 100% on living room devices by reducing INP by 61%](https://web.dev/case-studies/hotstar-inp)
 
 ## Blogs
