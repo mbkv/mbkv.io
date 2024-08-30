@@ -21,6 +21,7 @@ Game development has always been fascinating to me. But, I've found that many of
   contains a huge amount of information about optimization algorithms!
   
 - [Ubershaders and pipeline pre-compilation](https://github.com/godotengine/godot/pull/90400)
+- [How to write a renderer for modern graphics APIs](https://blog.mecheye.net/2023/09/how-to-write-a-renderer-for-modern-apis/)
 
 
 ### CPU
