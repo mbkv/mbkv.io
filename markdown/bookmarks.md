@@ -77,6 +77,10 @@ I have been in web apps for my entire engineering career. Most of the things I n
 - [How Video Works: A Dive into the Biggest Thing on the Internet & Why You Should Care -Jon Dahl (Mux)](https://www.youtube.com/watch?v=rb83esfHnW8)
 - [How Disney+ Hotstar increased weekly card views by 100% on living room devices by reducing INP by 61%](https://web.dev/case-studies/hotstar-inp)
 
+### Wasm
+
+- [WASM from Scratch](https://nickav.co/posts/0003_wasm_from_scratch)
+
 ## Blogs
 
 - [Tonsky.me](https://tonsky.me/)
